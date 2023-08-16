@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\5700g\\Desktop\\clases\\Lenguajes\\ArcadeMachine\\ArcadeMachineBackend\\ArcadeMachine.csproj": {}
+    "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachineBackend\\ArcadeMachine.csproj": {}
   },
   "projects": {
-    "c:\\Users\\5700g\\Desktop\\clases\\Lenguajes\\ArcadeMachine\\ArcadeMachineBackend\\ArcadeMachine.csproj": {
+    "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachineBackend\\ArcadeMachine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\5700g\\Desktop\\clases\\Lenguajes\\ArcadeMachine\\ArcadeMachineBackend\\ArcadeMachine.csproj",
+        "projectUniqueName": "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachineBackend\\ArcadeMachine.csproj",
         "projectName": "ArcadeMachine",
-        "projectPath": "c:\\Users\\5700g\\Desktop\\clases\\Lenguajes\\ArcadeMachine\\ArcadeMachineBackend\\ArcadeMachine.csproj",
-        "packagesPath": "C:\\Users\\5700g\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\5700g\\Desktop\\clases\\Lenguajes\\ArcadeMachine\\ArcadeMachineBackend\\obj\\",
+        "projectPath": "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachineBackend\\ArcadeMachine.csproj",
+        "packagesPath": "C:\\Users\\Fredy Vasquez\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachineBackend\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\5700g\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Fredy Vasquez\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -40,6 +44,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.10, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[7.0.2, )"
