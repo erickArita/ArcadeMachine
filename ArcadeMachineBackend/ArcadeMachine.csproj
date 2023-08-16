@@ -37,7 +37,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Core\Autentication\Models\" />
       <Folder Include="Domain\" />
       <Folder Include="Services\" />
     </ItemGroup>
