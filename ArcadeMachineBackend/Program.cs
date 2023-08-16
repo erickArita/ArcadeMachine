@@ -10,6 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AplicationDbContext>(opt =>
     opt.UseSqlServer("name=DefaultConnection")
 );
+
+builder.Services.AddAuthentication();
+
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt => opt.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<AplicationDbContext>()
     .AddDefaultTokenProviders();
@@ -37,7 +40,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-builder.Services.AddAuthentication();
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
