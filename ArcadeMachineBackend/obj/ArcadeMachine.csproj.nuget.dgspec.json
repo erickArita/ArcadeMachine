@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachine\\ArcadeMachine.csproj": {}
+    "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachineBackend\\ArcadeMachine.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachine\\ArcadeMachine.csproj": {
+    "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachineBackend\\ArcadeMachine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachine\\ArcadeMachine.csproj",
+        "projectUniqueName": "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachineBackend\\ArcadeMachine.csproj",
         "projectName": "ArcadeMachine",
-        "projectPath": "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachine\\ArcadeMachine.csproj",
+        "projectPath": "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachineBackend\\ArcadeMachine.csproj",
         "packagesPath": "C:\\Users\\Fredy Vasquez\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachine\\obj\\",
+        "outputPath": "C:\\Users\\Fredy Vasquez\\Desktop\\Proyecto\\ArcadeMachineBackend\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -44,6 +44,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.10, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[7.0.2, )"
