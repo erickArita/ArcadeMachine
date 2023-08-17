@@ -11,11 +11,11 @@ builder.Services.AddDbContext<AplicationDbContext>(opt =>
     opt.UseSqlServer("name=DefaultConnection")
 );
 
-builder.Services.AddAuthentication();
-
+ 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt => opt.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<AplicationDbContext>()
     .AddDefaultTokenProviders();
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -40,7 +40,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+// app.UseAuthentication();
 
 app.UseAuthorization();
 
