@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Protocol;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace ArcadeMachine.Core.Autentication;
@@ -36,9 +37,14 @@ public class AuthenticationController : ControllerBase
         // Check if the user exists
         var existUser = await _userManager.FindByEmailAsync(registerUser.Email);
         var existUserName = await _userManager.FindByNameAsync(registerUser.Username);
-        if (existUser != null || existUserName != null)
+        if (existUser != null )
         {
             return AplicationResponses.Error("El email ya existe");
+        }
+        
+        if (  existUserName != null)
+        {
+            return AplicationResponses.Error("El nombre de usuario ya existe");
         }
 
         // Create the user
@@ -49,15 +55,17 @@ public class AuthenticationController : ControllerBase
         };
 
         var result = await _userManager.CreateAsync(user, registerUser.Password);
-
-        if (result.Succeeded)
-        {
-            return AplicationResponses.Success("El usuario se ha creado correctamente");
-        }
-        else
+        
+        if (!result.Succeeded)
         {
             return AplicationResponses.Error("Error al crear el usuario", result.Errors);
         }
+
+        return await Login(new LoginUser
+        {
+            UserName = registerUser.Username,
+            Password = registerUser.Password
+        });
     }
 
     [HttpPost]
@@ -81,7 +89,7 @@ public class AuthenticationController : ControllerBase
 
             return AplicationResponses.Success(data: new
             {
-                token =new JwtSecurityTokenHandler().WriteToken(jwtToken),
+                token = new JwtSecurityTokenHandler().WriteToken(jwtToken),
                 expiration = jwtToken.ValidTo.Millisecond,
             });
         }
