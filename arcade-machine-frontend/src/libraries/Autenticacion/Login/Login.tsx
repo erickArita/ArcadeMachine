@@ -1,36 +1,49 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { LoginRegistroBase } from "../../../components/LoginRegistroBase";
 import { Input } from "@nextui-org/react";
 import { Section } from "../../../components/Section";
+import { useAuth } from "../../auth";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { loginSchema } from "./loginSchema";
+
+interface IFormInputs {
+  userName: string;
+  password: string;
+}
 
 export const Login = () => {
   const navigate = useNavigate();
+  const { handleSubmit, register, formState } = useForm<IFormInputs>({
+    resolver: yupResolver(loginSchema),
+  });
+
+  const { login, isAuthenticated } = useAuth();
 
   const onCrearCuenta = () => {
     navigate("/registro");
   };
 
-  const onIniciarSesion = () => {
-    console.log("Iniciar sesion");
+  const onSubmit = async (data: IFormInputs) => {
+    await login({
+      email: data.userName,
+      password: data.password,
+    });
   };
 
-  const onSubmit = (e: {
-    preventDefault: () => void;
-    currentTarget: HTMLFormElement | undefined;
-  }) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData);
-    console.log(data);
-  };
+  if (isAuthenticated) {
+    return <Navigate to="/" state={{ fromLogin: true }} />;
+  }
+
+  const userRegister = register("userName");
+  const passwordRegister = register("password");
 
   return (
     <Section>
-      <form onSubmit={onSubmit} className="h-full">
+      <form onSubmit={handleSubmit(onSubmit)} className="h-full">
         <LoginRegistroBase
           title="Bienvenido a ArcadeMachine!"
           onCrearCuenta={onCrearCuenta}
-          onIniciarSesion={onIniciarSesion}
           isLogin
         >
           <Input
@@ -40,7 +53,8 @@ export const Login = () => {
             placeholder="Ingresa tu nombre de usuario"
             size="lg"
             radius="sm"
-            name="usuario"
+            {...userRegister}
+            errorMessage={formState.errors.userName?.message}
           />
           <Input
             labelPlacement="outside"
@@ -48,8 +62,9 @@ export const Login = () => {
             label="Contraseña"
             placeholder="Ingresa tu contraseña"
             size="lg"
-            name="contrasena"
             radius="sm"
+            {...passwordRegister}
+            errorMessage={formState.errors.password?.message}
           />
         </LoginRegistroBase>
       </form>
