@@ -4,7 +4,10 @@ import "./registro.css";
 import { Section } from "../../../components/Section";
 
 export const Registro = () => {
-  const onSubmit = (e) => {
+  const onSubmit = (e: {
+    preventDefault: () => void;
+    currentTarget: HTMLFormElement | undefined;
+  }) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData);
