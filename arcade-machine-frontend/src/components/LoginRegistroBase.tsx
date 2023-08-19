@@ -54,7 +54,9 @@ export const LoginRegistroBase = ({
           radius="sm"
           size="lg"
           onClick={onCrearCuenta}
-          type="button"
+          type= {
+            isLogin ? "button" : "submit"
+          }
         >
           Crear Cuenta
         </Button>
