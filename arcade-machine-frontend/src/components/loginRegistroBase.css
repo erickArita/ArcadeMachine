@@ -8,6 +8,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    & .image {
+      width: 60%;
+      max-width: 280px;
+     }
   }
 
   & .section__right {

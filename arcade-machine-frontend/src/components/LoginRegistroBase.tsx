@@ -21,8 +21,8 @@ export const LoginRegistroBase = ({
 }: LoginRegistroBaseProps & PropsWithChildren) => (
   <div className="login h-full">
     <div className="seccion__left">
-      <div className="logo">
-        <Image src="/LogoGif.gif" width={500} />
+      <div className="w-1/2 lg:w-96  ">
+        <Image src="/LogoGif.gif"  />
       </div>
     </div>
     <div className="section__right">
