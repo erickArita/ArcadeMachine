@@ -1,4 +1,5 @@
 using System.Text;
+using ArcadeMachine.Api;
 using ArcadeMachine.Infraestructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -12,6 +13,8 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 var audience = builder.Configuration["JWT:ValidAudience"];
 var issuer = builder.Configuration["JWT:ValidIssuer"];
 var secret = builder.Configuration["JWT:Secret"];
+
+builder.Services.AddSignalR();
 
 builder.Services.AddCors(options =>
 {
@@ -102,5 +105,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<GameHub>("/GameHub");
 
 app.Run();
