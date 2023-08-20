@@ -1,15 +1,9 @@
 import { Outlet, createBrowserRouter } from "react-router-dom";
 import { RequiredAuth } from ".";
+import { Layout } from "../../components/Layout";
 import { Login } from "../Autenticacion/Login/Login";
 import { Registro } from "../Autenticacion/Registro/Registro";
-
-const App = () => {
-  return <div>Estoy Dentro</div>;
-};
-
-const OtroComponente = () => {
-  return <div>Estoy Dentro</div>;
-};
+import { CardContainer } from "../games/CardContainer/CardContainer";
 
 export const Router = createBrowserRouter([
   {
@@ -23,17 +17,15 @@ export const Router = createBrowserRouter([
   {
     element: (
       <RequiredAuth loaderComponent={<p>loading</p>}>
-        <Outlet />
+        <Layout>
+          <Outlet />
+        </Layout>
       </RequiredAuth>
     ),
     children: [
       {
         index: true,
-        element: <App />,
-      },
-      {
-        path: "otro",
-        element: <OtroComponente />,
+        element: <CardContainer />,
       },
     ],
   },

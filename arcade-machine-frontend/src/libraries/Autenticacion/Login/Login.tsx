@@ -1,11 +1,11 @@
 import { Navigate, useNavigate } from "react-router-dom";
-import { LoginRegistroBase } from "../../../components/LoginRegistroBase";
-import { Input } from "@nextui-org/react";
+ import { Input } from "@nextui-org/react";
 import { Section } from "../../../components/Section";
 import { useAuth } from "../../auth";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { loginSchema } from "./loginSchema";
+import { LoginRegistroBase } from "../../../components/LoginRegistroBase/LoginRegistroBase";
 
 interface IFormInputs {
   userName: string;
