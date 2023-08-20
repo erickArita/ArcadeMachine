@@ -22,4 +22,5 @@ public class AplicationDbContext : IdentityDbContext
 
     public DbSet<Partida> Partidas { get; set; }
     public DbSet<MiniJuego> Minijuegos { get; set; }
+    
 }
