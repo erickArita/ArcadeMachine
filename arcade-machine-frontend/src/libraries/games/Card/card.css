@@ -1,21 +1,20 @@
-.GameCard{
-    border-radius: 6px;
-    margin: 100px;
-    width: 254px;
-    height: 309px;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    gap: 30px;
-    padding-top: 30px;
-    align-items: center;
-    & img{
-        width: 130px;
+.GameCard {
+  border-radius: 6px;
+  width: 254px;
+  height: 309px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding-top: 30px;
+  align-items: center;
 
-    }
-    & h2{
-        font-size: 1rem;
-        font-weight: 700;
-        color: #ffffff;
-    }
+  & img {
+    width: 130px;
+  }
+
+  & h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
 }

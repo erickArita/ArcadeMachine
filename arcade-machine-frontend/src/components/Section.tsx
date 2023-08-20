@@ -1,5 +1,14 @@
 import { FC, PropsWithChildren } from "react";
 
-export const Section: FC<PropsWithChildren> = ({ children }) => {
-  return <section className="h-full">{children} </section>;
+export const Section: FC<
+  PropsWithChildren & {
+    className?: string;
+    style?: React.CSSProperties;
+  }
+> = ({ children, className, style }) => {
+  return (
+    <section style={style} className={`h-full ${className}`}>
+      {children}{" "}
+    </section>
+  );
 };
