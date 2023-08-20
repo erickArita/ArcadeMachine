@@ -4,16 +4,19 @@ using ArcadeMachine.Infraestructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ArcadeMachine.Data.Migrations.IdentityServer.Configuration
+namespace ArcadeMachine.Data.Migrations
 {
     [DbContext(typeof(AplicationDbContext))]
-    partial class AplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230819231241_AddPartidaMiniJuegoEntities")]
+    partial class AddPartidaMiniJuegoEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,61 @@ namespace ArcadeMachine.Data.Migrations.IdentityServer.Configuration
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ArcadeMachine.Domain.Entities.MiniJuego", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("nombre");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("minijuegos");
+                });
+
+            modelBuilder.Entity("ArcadeMachine.Domain.Entities.Partida", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("juegoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("puntajeUsuario1")
+                        .HasColumnType("int");
+
+                    b.Property<int>("puntajeUsuario2")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("usuario1Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("usuario1Id1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("usuario2Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("usuario2Id1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("juegoId");
+
+                    b.HasIndex("usuario1Id1");
+
+                    b.HasIndex("usuario2Id1");
+
+                    b.ToTable("partidas");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -218,6 +276,29 @@ namespace ArcadeMachine.Data.Migrations.IdentityServer.Configuration
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("ArcadeMachine.Domain.Entities.Partida", b =>
+                {
+                    b.HasOne("ArcadeMachine.Domain.Entities.MiniJuego", "juego")
+                        .WithMany()
+                        .HasForeignKey("juegoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "usuario1")
+                        .WithMany()
+                        .HasForeignKey("usuario1Id1");
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "usuario2")
+                        .WithMany()
+                        .HasForeignKey("usuario2Id1");
+
+                    b.Navigation("juego");
+
+                    b.Navigation("usuario1");
+
+                    b.Navigation("usuario2");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
