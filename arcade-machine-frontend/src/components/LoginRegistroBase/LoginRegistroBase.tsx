@@ -1,5 +1,4 @@
 import { Button, Image } from "@nextui-org/react";
-import { Section } from "./Section";
 
 import "./loginRegistroBase.css";
 import { PropsWithChildren } from "react";
@@ -22,7 +21,7 @@ export const LoginRegistroBase = ({
   <div className="login h-full">
     <div className="seccion__left">
       <div className="w-1/2 lg:w-96  ">
-        <Image src="/LogoGif.gif"  />
+        <Image src="/LogoGif.gif" />
       </div>
     </div>
     <div className="section__right">
@@ -54,9 +53,7 @@ export const LoginRegistroBase = ({
           radius="sm"
           size="lg"
           onClick={onCrearCuenta}
-          type= {
-            isLogin ? "button" : "submit"
-          }
+          type={isLogin ? "button" : "submit"}
         >
           Crear Cuenta
         </Button>

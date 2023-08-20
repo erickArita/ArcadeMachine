@@ -1,0 +1,11 @@
+.GameCard{
+    width: 254px;
+    height: 209px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    justify-content: center;
+    align-items: center;
+
+}

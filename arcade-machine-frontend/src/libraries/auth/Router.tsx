@@ -2,6 +2,7 @@ import { Outlet, createBrowserRouter } from "react-router-dom";
 import { RequiredAuth } from ".";
 import { Login } from "../Autenticacion/Login/Login";
 import { Registro } from "../Autenticacion/Registro/Registro";
+import { CardContainer } from "../games/CardContainer/CardContainer";
 
 const App = () => {
   return <div>Estoy Dentro</div>;
@@ -14,7 +15,7 @@ const OtroComponente = () => {
 export const Router = createBrowserRouter([
   {
     path: "/login",
-    element: <Login />,
+    element: <CardContainer />,
   },
   {
     path: "/registro",
@@ -29,11 +30,7 @@ export const Router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <App />,
-      },
-      {
-        path: "otro",
-        element: <OtroComponente />,
+        element: <CardContainer />,
       },
     ],
   },

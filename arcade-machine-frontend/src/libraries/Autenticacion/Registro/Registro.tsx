@@ -1,7 +1,7 @@
 import { Input } from "@nextui-org/react";
-import { LoginRegistroBase } from "../../../components/LoginRegistroBase";
-import "./registro.css";
+ import "./registro.css";
 import { Section } from "../../../components/Section";
+import { LoginRegistroBase } from "../../../components/LoginRegistroBase/LoginRegistroBase";
 
 export const Registro = () => {
   const onSubmit = (e: {
