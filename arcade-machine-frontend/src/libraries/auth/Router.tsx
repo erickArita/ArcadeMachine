@@ -1,9 +1,11 @@
 import { Outlet, createBrowserRouter } from "react-router-dom";
 import { RequiredAuth } from ".";
 import { Layout } from "../../components/Layout";
+import { Juegos } from "../../features/Juegos";
 import { Login } from "../Autenticacion/Login/Login";
 import { Registro } from "../Autenticacion/Registro/Registro";
-import { CardContainer } from "../games/CardContainer/CardContainer";
+import { SignalRProvider } from "../../providers/SignalProvider";
+import { UserProvider } from "../../providers/UserProvider";
 
 export const Router = createBrowserRouter([
   {
@@ -17,15 +19,19 @@ export const Router = createBrowserRouter([
   {
     element: (
       <RequiredAuth loaderComponent={<p>loading</p>}>
-        <Layout>
-          <Outlet />
-        </Layout>
+        <UserProvider>
+          <SignalRProvider>
+            <Layout>
+              <Outlet />
+            </Layout>
+          </SignalRProvider>
+        </UserProvider>
       </RequiredAuth>
     ),
     children: [
       {
         index: true,
-        element: <CardContainer />,
+        element: <Juegos />,
       },
     ],
   },

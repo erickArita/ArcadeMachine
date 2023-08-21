@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_URL } from "../globals/environment";
+import { getToken } from "../libraries/auth";
 
 export const baseApi = createApi({
   reducerPath: "api",
@@ -7,12 +8,11 @@ export const baseApi = createApi({
     baseUrl: API_URL,
     jsonContentType: "application/json",
     prepareHeaders: async (headers) => {
-      //TODO: Implementar token
-      // const token = getToken().token;
+      const token = getToken().token;
 
-      // if (token) {
-      //   headers.set("authorization", `Bearer ${token}`);
-      // }
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
+      }
 
       return headers;
     },

@@ -3,9 +3,13 @@ import { UserIcon } from "./iconst";
 
 interface NavbarProps {
   userName?: string;
+  cerrarSesion?: () => void;
 }
 
-export const Navbar = ({ userName = "Erick_Ar" }: NavbarProps) => (
+export const Navbar = ({
+  userName = "Erick_Ar",
+  cerrarSesion,
+}: NavbarProps) => (
   <nav className="flex justify-between w-full px-unit-4xl items-center">
     <Image src="/LogoGif.gif" width={60} alt="Logo" />
 
@@ -18,6 +22,7 @@ export const Navbar = ({ userName = "Erick_Ar" }: NavbarProps) => (
       to-yellow-500
       font-semibold
       text-white shadow-lg"
+        onClick={cerrarSesion}
         radius="sm"
         size="lg"
       >

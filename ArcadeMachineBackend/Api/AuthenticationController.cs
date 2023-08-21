@@ -37,12 +37,12 @@ public class AuthenticationController : ControllerBase
         // Check if the user exists
         var existUser = await _userManager.FindByEmailAsync(registerUser.Email);
         var existUserName = await _userManager.FindByNameAsync(registerUser.Username);
-        if (existUser != null )
+        if (existUser != null)
         {
             return AplicationResponses.Error("El email ya existe");
         }
-        
-        if (  existUserName != null)
+
+        if (existUserName != null)
         {
             return AplicationResponses.Error("El nombre de usuario ya existe");
         }
@@ -55,7 +55,7 @@ public class AuthenticationController : ControllerBase
         };
 
         var result = await _userManager.CreateAsync(user, registerUser.Password);
-        
+
         if (!result.Succeeded)
         {
             return AplicationResponses.Error("Error al crear el usuario", result.Errors);
@@ -82,7 +82,7 @@ public class AuthenticationController : ControllerBase
             var authClaims = new List<Claim>()
             {
                 new(ClaimTypes.Name, loginUser.UserName),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             };
 
             var jwtToken = GetToken(authClaims);
@@ -110,5 +110,27 @@ public class AuthenticationController : ControllerBase
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
         );
         return token;
+    }
+
+    [Authorize]
+    [HttpGet]
+    public async Task<UserInfoResponse> GetUserInfo()
+    {
+        var username = User.Identity.Name;
+
+        try
+        {
+            var user = await _userManager.FindByNameAsync(username);
+
+            return new UserInfoResponse(
+                Username: username,
+                Email: user.Email,
+                UserId: Guid.Parse(user.Id)
+            );
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Error al obtener la información del usuario");
+        }
     }
 }

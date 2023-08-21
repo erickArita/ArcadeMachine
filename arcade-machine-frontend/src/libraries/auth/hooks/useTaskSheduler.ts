@@ -1,5 +1,5 @@
-import { useCallback, useRef } from 'react';
-import { ReturnWorker, createWorker } from '../helpers/createWorker';
+import { useCallback, useRef } from "react";
+import { ReturnWorker, createWorker } from "../helpers/createWorker";
 
 interface UseTaskSchedulerProps {
   name: string;
@@ -14,15 +14,13 @@ export function useTaskScheduler({ name, timeMs }: UseTaskSchedulerProps) {
     (workerFn: () => string, callbackFn: () => void) => {
       //si ya existe un worker, no hacemos nada.
       if (workerRef.current) {
-        console.log('workerRef.current', workerRef.current);
-
         workerRef.current.workerRef.postMessage({ exp: timeMs });
         return;
       }
       workerRef.current = createWorker(workerFn);
       workerRef.current.workerRef.postMessage({ exp: timeMs });
 
-      workerRef.current.workerRef.addEventListener('message', event => {
+      workerRef.current.workerRef.addEventListener("message", (event) => {
         if (event.data.type === name) {
           callbackFn();
         }

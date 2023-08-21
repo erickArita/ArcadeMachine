@@ -2,7 +2,7 @@ using ArcadeMachine.Core.Partida.Models;
 using ArcadeMachine.Infraestructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
-namespace ArcadeMachine.Core.Partida;
+namespace ArcadeMachine.Core.Partida.Repositorios.PartidaRepositorio;
 
 public class PartidasRepositorio : IPartidaRepositorio
 {

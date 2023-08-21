@@ -36,8 +36,5 @@
       <None Remove="Properties\**" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Core\Autentication\Services\" />
-    </ItemGroup>
 
 </Project>
