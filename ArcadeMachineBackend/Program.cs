@@ -1,8 +1,13 @@
 using System.Text;
 using ArcadeMachine.Api;
+using ArcadeMachine.Core.Autentication.Services;
+using ArcadeMachine.Core.Partida;
+using ArcadeMachine.Core.Partida.Repositorios.PartidaRepositorio;
+using ArcadeMachine.Core.Partida.Services.PartidaService;
 using ArcadeMachine.Infraestructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -10,11 +15,17 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 // Add services to the container.
+
+builder.Services.AddTransient<IPartidaRepositorio, PartidasRepositorio>();
+builder.Services.AddSingleton<IPartidaService, PartidasService>();
+
 var audience = builder.Configuration["JWT:ValidAudience"];
 var issuer = builder.Configuration["JWT:ValidIssuer"];
 var secret = builder.Configuration["JWT:Secret"];
 
-builder.Services.AddSignalR();
+
+// builder.Services.AddSingleton<IUserIdProvider, EmailBasedUserIdProvider>();
+
 
 builder.Services.AddCors(options =>
 {
@@ -23,7 +34,8 @@ builder.Services.AddCors(options =>
         {
             policy.WithOrigins(audience)
                 .AllowAnyHeader()
-                .AllowAnyMethod();
+                .AllowAnyMethod()
+                .AllowAnyOrigin();
         });
 });
 
@@ -43,6 +55,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(opt =>
 {
+    // opt.Authority = issuer;
     opt.SaveToken = true;
     opt.RequireHttpsMetadata = false;
     opt.TokenValidationParameters = new TokenValidationParameters()
@@ -52,6 +65,24 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = audience,
         ValidIssuer = issuer,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
+    };
+    opt.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+
+            // If the request is for our hub...
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) &&
+                (path.StartsWithSegments("/GameHub")))
+            {
+                // Read the token out of the query string
+                context.Token = accessToken;
+            }
+
+            return Task.CompletedTask;
+        }
     };
 });
 
@@ -87,6 +118,8 @@ builder.Services.AddSwaggerGen(opt =>
         }
     });
 });
+builder.Services.AddSignalR();
+builder.Services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
 
 var app = builder.Build();
 

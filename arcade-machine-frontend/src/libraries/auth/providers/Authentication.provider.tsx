@@ -27,7 +27,7 @@ interface IAuthenticationProvider {
 export const AuthenticationProvider: FC<
   PropsWithChildren<IAuthenticationProvider>
 > = ({ children, customLoginFn, refreshTokenFn, isDev, customRegisterFn }) => {
-  const { isAuthenticated, isExpiredToken, expireTime, refreshToken } =
+  const { isAuthenticated, isExpiredToken, expireTime, refreshToken, token } =
     getToken();
 
   const [localIsAuthenticated, setLocalIsAuthenticated] =
@@ -80,8 +80,6 @@ export const AuthenticationProvider: FC<
         return;
       }
       try {
-        console.log(refreshToken);
-
         const newCredentials = await refreshTokenFn(refreshToken);
         handleLogin(newCredentials.access_token);
       } catch (error) {
@@ -159,6 +157,7 @@ export const AuthenticationProvider: FC<
         isAuthenticated: localIsAuthenticated,
         isLoading: isLoading,
         register: onRegister,
+        token: token as string,
       }}
     >
       {children}

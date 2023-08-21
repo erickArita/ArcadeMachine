@@ -1,11 +1,15 @@
 import { Card } from "../Card/Card";
 
-export const CardContainer = () => {
+interface CardContainerProps {
+  titulo: string;
+}
+
+export const CardContainer = ({ titulo }: CardContainerProps) => {
   return (
     <section className="grid flex-1 justify-center h-full auto-rows-auto">
       <div>
         <h1 className="  font-bold text-3xl text-center	 text-black ">
-          Vamoo a Juga
+          {titulo}
         </h1>
       </div>
       <div className="pb-20 grid grid-cols-3  max-w-7xl   gap-32  row-span-4 ">

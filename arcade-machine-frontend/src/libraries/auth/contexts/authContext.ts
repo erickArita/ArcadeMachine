@@ -9,6 +9,7 @@ type TInitialStateActions = {
   logOut: () => void;
   login: (params: TCredentials) => Promise<void>;
   register: (params: IRegisterFormRequest) => Promise<void>;
+  token: string;
 };
 
 const initialState = {} as TInitStateWithLoader & TInitialStateActions;

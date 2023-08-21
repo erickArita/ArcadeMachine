@@ -1,21 +1,21 @@
-import jwtDecode, { JwtPayload } from 'jwt-decode';
-import { secondsToMilliseconds } from '../utils/secondsToMilliseconds';
+import jwtDecode, { JwtPayload } from "jwt-decode";
+import { secondsToMilliseconds } from "../utils/secondsToMilliseconds";
 
 export const deleteToken = () => {
-  localStorage.removeItem('token');
-  localStorage.removeItem('expireTime');
-  localStorage.removeItem('refreshToken');
+  localStorage.removeItem("token");
+  localStorage.removeItem("expireTime");
+  localStorage.removeItem("refreshToken");
 };
 
 export const getToken = () => {
   try {
     const now = new Date(Date.now()).getTime();
 
-    const expireTimeString = localStorage.getItem('expireTime');
+    const expireTimeString = localStorage.getItem("expireTime");
 
-    const refreshToken = localStorage.getItem('refreshToken');
+    const refreshToken = localStorage.getItem("refreshToken");
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
 
     const expireTime = Number(expireTimeString);
 
@@ -41,13 +41,10 @@ export const getToken = () => {
   }
 };
 
-export const setToken = (
-  token: string,
-  expiration: number,
- ) => {
-  localStorage.setItem('token', token);
-  localStorage.setItem('expireTime', String(expiration));
- };
+export const setToken = (token: string, expiration: number) => {
+  localStorage.setItem("token", token);
+  localStorage.setItem("expireTime", String(expiration));
+};
 
 type JwtApiClaims = {
   exp: number;
