@@ -7,17 +7,24 @@ import { Router } from "./libraries/auth/Router.tsx";
 import "./index.css";
 import { AuthenticationProvider } from "./libraries/auth/index.ts";
 import { login, register } from "./services/authFunctions.ts";
+import { Provider } from "react-redux";
+import store from "./store/store.ts";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <NextUIProvider>
-      <AuthenticationProvider customLoginFn={login} customRegisterFn={register}>
-        <main className="dark text-foreground bg-background  min-h-full ">
-          <div className="w-full h-full">
-            <RouterProvider router={Router} />
-          </div>
-        </main>
-      </AuthenticationProvider>
+      <Provider store={store}>
+        <AuthenticationProvider
+          customLoginFn={login}
+          customRegisterFn={register}
+        >
+          <main className="dark text-foreground bg-background  min-h-full ">
+            <div className="w-full h-full">
+              <RouterProvider router={Router} />
+            </div>
+          </main>
+        </AuthenticationProvider>
+      </Provider>
     </NextUIProvider>
   </React.StrictMode>
 );

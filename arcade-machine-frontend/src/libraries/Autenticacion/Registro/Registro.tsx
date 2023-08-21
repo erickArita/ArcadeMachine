@@ -1,5 +1,5 @@
 import { Input } from "@nextui-org/react";
- import "./registro.css";
+import "./registro.css";
 import { Section } from "../../../components/Section";
 import { LoginRegistroBase } from "../../../components/LoginRegistroBase/LoginRegistroBase";
 
