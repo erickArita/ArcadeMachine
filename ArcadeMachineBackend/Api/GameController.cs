@@ -1,7 +1,10 @@
 using ArcadeMachine.Core.Partida;
+using ArcadeMachine.Core.Partida.Enums;
 using ArcadeMachine.Core.Partida.Repositorios.PartidaRepositorio;
+using ArcadeMachine.Core.Partida.Services.PartidaService.Modelos;
 using ArcadeMachine.Infraestructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -51,5 +54,35 @@ public class GameController : ControllerBase
         }
 
         return Ok();
+    }
+    
+    [HttpPost]
+    public async void SincronizarJugada(Guid partidaId, Guid jugadorId, PiedraPapelTijeraEnum jugada)
+    {
+        var partida = _partidaService.ObtenerPartida(partidaId);
+        var contrincante = partida.ObtenerContrincante(jugadorId);
+        await _hubContext.Clients.User(contrincante).SendAsync("SincronizarJugada", jugada);
+    }
+    
+    [HttpPost]
+    public async void ValidarGanador(Guid partidaId, Guid jugadorId, bool resultado)
+    {
+        var partidaActualizada = _partidaService.ActualizarPartida(partidaId, jugadorId, resultado);
+        var user1 = partidaActualizada.userName1;
+        var user2 = partidaActualizada.userName2;
+        
+        await _hubContext.Clients.Users(user1, user2).SendAsync("Score", partidaActualizada.ResultadoJugador1, partidaActualizada.ResultadoJugador2);
+    }
+
+    [HttpPost]
+    public async Task<Score> TerminarPartida(Guid partidaId, Guid jugadorId)
+    {
+        var partida = _partidaService.TerminarPartida(partidaId, jugadorId);
+        if (partida is not null)
+        {
+            await _partidaRepositorio.CrearPartida(partida);
+        }
+        var score = _partidaService.ObtenerScore(partida);
+        return score;
     }
 }
