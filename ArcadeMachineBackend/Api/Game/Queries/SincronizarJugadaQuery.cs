@@ -1,6 +1,6 @@
 ﻿using ArcadeMachine.Core.Partida.Enums;
 
-namespace ArcadeMachine.Api.Queries;
+namespace ArcadeMachine.Api.Game.Queries;
 
 public record SincronizarJugadaQuery(
     Guid PartidaId,

@@ -1,17 +1,15 @@
-using ArcadeMachine.Api.Queries;
-using ArcadeMachine.Api.Requests;
+using ArcadeMachine.Api.Game.Queries;
+using ArcadeMachine.Api.Game.Requests;
 using ArcadeMachine.Core.Partida;
-using ArcadeMachine.Core.Partida.Enums;
 using ArcadeMachine.Core.Partida.Repositorios.PartidaRepositorio;
 using ArcadeMachine.Core.Partida.Services.PartidaService.Modelos;
 using ArcadeMachine.Infraestructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ArcadeMachine.Api;
+namespace ArcadeMachine.Api.Game;
 
 [Route("api/[controller]/[action]")]
 [ApiController]
