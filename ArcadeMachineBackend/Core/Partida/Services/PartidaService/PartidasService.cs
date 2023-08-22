@@ -1,5 +1,6 @@
 ﻿using ArcadeMachine.Core.Partida.Enums;
 using ArcadeMachine.Core.Partida.Models;
+using ArcadeMachine.Core.Partida.Services.PartidaService.Modelos;
 
 namespace ArcadeMachine.Core.Partida.Services.PartidaService;
 
@@ -39,31 +40,62 @@ public class PartidasService : IPartidaService
     }
 
     // clase para eliminar la partida temporal
-    public void TerminarPartida(Guid partidaId)
-    {
-        var partida = Partidas.FirstOrDefault(p => p.PartidaId == partidaId);
-        Partidas.Remove(partida);
-    }
-
-    public PartidaTemporal ActualizarPartida(Guid partidaId, Guid jugadorId, int resultado, TipoJugadorEnum tipoJugador)
+    public PartidaTemporal TerminarPartida(Guid partidaId, Guid usuarioId)
     {
         var partida = Partidas.First(p => p.PartidaId == partidaId);
-        if (tipoJugador == TipoJugadorEnum.Anfitrion)
+
+        partida.EliminarJugador(usuarioId);
+
+        if (!partida.Emparejada())
         {
-            partida.ResultadoJugador1 = resultado;
-        }
-        else
-        {
-            partida.ResultadoJugador2 = resultado;
+            Partidas.Remove(partida);
         }
 
-        if (partida.EsPartidaTerminada())
+        return partida;
+    }
+
+    public PartidaTemporal ActualizarPartida(Guid partidaId, Guid jugadorId, bool gano)
+    {
+        var partida = ObtenerPartida(partidaId);
+
+        if (partida.ObtenerTipoJugar(jugadorId) == TipoJugadorEnum.Anfitrion && gano)
         {
-            return partida;
+            partida.ResultadoJugador1++;
         }
         else
         {
-            return null;
+            partida.ResultadoJugador2++;
         }
+
+        return partida;
+    }
+
+    public TipoJugadorEnum GanadorPartida(PartidaTemporal partida)
+    {
+        if (partida.ResultadoJugador1 > partida.ResultadoJugador2)
+        {
+            return TipoJugadorEnum.Anfitrion;
+        }
+        else
+        {
+            return TipoJugadorEnum.Invitado;
+        }
+    }
+
+    public Score ObtenerScore(PartidaTemporal partidaActualizada)
+    {
+        var score = new Score(
+            ScoreUsuario1: partidaActualizada.ResultadoJugador1,
+            ScoreUsuario2: partidaActualizada.ResultadoJugador2,
+            UsuarioGanador: GanadorPartida(partidaActualizada)
+        );
+
+        return score;
+    }
+
+    public PartidaTemporal ObtenerPartida(Guid partidaId)
+    {
+        var partida = Partidas.First(p => p.PartidaId == partidaId);
+        return partida;
     }
 }

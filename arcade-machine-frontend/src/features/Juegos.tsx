@@ -1,36 +1,17 @@
-import { Button } from "@nextui-org/react";
-import { CardContainer } from "../libraries/games/CardContainer/CardContainer";
-import { useSignalREffect } from "../providers/SignalProvider";
-import { useLazyEmparejarQuery } from "./api/partidas";
-import { useUser } from "../providers/UserProvider";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { CardContainer } from "../libraries/games/components/CardContainer/CardContainer";
+import { TipoJuegoEnum } from "../libraries/games/enums/TipoJuegoEnum";
 
 export const Juegos = () => {
-  const { user } = useUser();
-  const [emparejarQuery] = useLazyEmparejarQuery();
-  const [buscandoPartida, setBuscandoPartida] = useState(false);
+  const navigate = useNavigate();
 
-  useSignalREffect(
-    "Match",
-    (message) => {
-      console.log(message);
-      setBuscandoPartida(false);
-    },
-    []
-  );
-
-  const onEmparejar = () => {
-    if (!user) return;
-    emparejarQuery({ userId: user.userId });
-    setBuscandoPartida(true);
+  const handleSelectJuego = (tipoJuego: TipoJuegoEnum) => {
+    navigate(`/${tipoJuego}`);
   };
 
   return (
     <div className="flex justify-center flex-col">
-      <CardContainer titulo="Vamos a Jugaa" />
-      <Button isLoading={buscandoPartida} onClick={onEmparejar}>
-        Buscar partida
-      </Button>
+      <CardContainer titulo="Vamos a Jugaa" onSelectJuego={handleSelectJuego} />
     </div>
   );
 };

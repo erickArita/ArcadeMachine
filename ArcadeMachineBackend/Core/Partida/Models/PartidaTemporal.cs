@@ -1,4 +1,5 @@
 ﻿using ArcadeMachine.Core.Partida.Enums;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ArcadeMachine.Core.Partida.Models;
 
@@ -52,8 +53,29 @@ public class PartidaTemporal
         }
     }
 
-    public bool EsPartidaTerminada()
+    public void EliminarJugador(Guid jugadorId)
     {
-        return ResultadoJugador1 > 0 && ResultadoJugador2 > 0;
+        var tipoJugador = ObtenerTipoJugar(jugadorId);
+        
+        if (tipoJugador == TipoJugadorEnum.Anfitrion)
+        {
+            JugadorId1 = Guid.Empty;
+            userName1 = string.Empty;
+        }
+        else
+        {
+            JugadorId2 = Guid.Empty;
+            userName2 = string.Empty;
+        }
+    }
+
+    public string ObtenerContrincante(Guid jugadorId)
+    {
+        if (jugadorId == JugadorId1)
+        {
+            return userName2;
+        }
+
+        return userName1;
     }
 }

@@ -1,10 +1,15 @@
+import { TipoJuegoEnum } from "../../enums/TipoJuegoEnum";
 import { Card } from "../Card/Card";
 
 interface CardContainerProps {
   titulo: string;
+  onSelectJuego?: (tipo: TipoJuegoEnum) => void;
 }
 
-export const CardContainer = ({ titulo }: CardContainerProps) => {
+export const CardContainer = ({
+  titulo,
+  onSelectJuego,
+}: CardContainerProps) => {
   return (
     <section className="grid flex-1 justify-center h-full auto-rows-auto">
       <div>
@@ -19,6 +24,7 @@ export const CardContainer = ({ titulo }: CardContainerProps) => {
             img="/piedra.png"
             shadowColor="#dcc1fd"
             title="Piedra Papel Tijera"
+            oncClick={() => onSelectJuego?.(TipoJuegoEnum.PiedraPapelTijera)}
           />
         </div>
         <div className="grid items-start">
@@ -27,6 +33,7 @@ export const CardContainer = ({ titulo }: CardContainerProps) => {
             img="/ahorcado.png"
             shadowColor="#ffe49e"
             title="Piedra Papel Tijera"
+            oncClick={() => onSelectJuego?.(TipoJuegoEnum.AHORCADO)}
           />
         </div>
         <div className="grid  items-end">
@@ -35,6 +42,7 @@ export const CardContainer = ({ titulo }: CardContainerProps) => {
             img="dinosaurio.png"
             shadowColor="#fba4ea"
             title="Piedra Papel Tijera"
+            oncClick={() => onSelectJuego?.(TipoJuegoEnum.XO)}
           />
         </div>
       </div>

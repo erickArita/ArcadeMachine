@@ -34,7 +34,14 @@
 
     <ItemGroup>
       <None Remove="Properties\**" />
+
+
+
+
+
     </ItemGroup>
+
+
 
 
 </Project>
