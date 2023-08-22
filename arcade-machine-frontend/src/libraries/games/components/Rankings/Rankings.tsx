@@ -1,4 +1,4 @@
-import { Column, CustomTable } from "../../../components/CustomTable";
+import { Column, CustomTable } from "../../../../components/CustomTable";
 
 const rankingCols: Column[] = [
   {
@@ -12,10 +12,10 @@ const rankingCols: Column[] = [
 ];
 
 interface RankingTableProps<T> {
-  data: T[];
+  data?: T[];
 }
 
-interface RankingData {
+export interface RankingData {
   posicion: number;
   nombre: string;
 }
@@ -35,7 +35,7 @@ const historialCols: Column[] = [
   },
 ];
 
-interface HistorialData {
+export interface HistorialData {
   resultado: string;
   contrincante: string;
 }

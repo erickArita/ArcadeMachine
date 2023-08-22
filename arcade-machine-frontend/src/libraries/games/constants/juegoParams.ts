@@ -18,13 +18,13 @@ export const juegos: JuegoParams[] = [
     color: "#ffb900",
     img: "/ahorcado.png",
     shadowColor: "#ffe49e",
-    title: "Piedra Papel Tijera",
+    title: "XO",
   },
   {
     tipoJuego: TipoJuegoEnum.AHORCADO,
     color: "#dd2bbc",
     img: "dinosaurio.png",
     shadowColor: "#fba4ea",
-    title: "Piedra Papel Tijera",
+    title: "Ahorcado",
   },
 ];

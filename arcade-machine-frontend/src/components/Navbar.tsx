@@ -10,7 +10,7 @@ export const Navbar = ({
   userName = "Erick_Ar",
   cerrarSesion,
 }: NavbarProps) => (
-  <nav className="flex justify-between w-full px-unit-4xl items-center">
+  <nav className="flex justify-between container mx-auto  items-center">
     <Image src="/LogoGif.gif" width={60} alt="Logo" />
 
     <div className="flex items-center gap-4">

@@ -20,12 +20,17 @@ export interface Row {
 
 interface RankingTableProps {
   columns: Column[];
-  rows: Row[];
+  rows?: Row[];
 }
 
-export const CustomTable = ({ columns, rows }: RankingTableProps) => {
+export const CustomTable = ({ columns, rows = [] }: RankingTableProps) => {
   return (
-    <Table aria-label="Example table with dynamic content">
+
+    <Table
+      className="light"
+      bgcolor="white"
+      aria-label="Example table with dynamic content"
+    >
       <TableHeader>
         {columns.map((column) => (
           <TableColumn key={column.key}>{column.label}</TableColumn>
@@ -33,7 +38,7 @@ export const CustomTable = ({ columns, rows }: RankingTableProps) => {
       </TableHeader>
       <TableBody>
         {rows.map((row) => (
-          <TableRow key={row.key}>
+          <TableRow key={row?.key}>
             {(columnKey) => (
               <TableCell>{getKeyValue(row, columnKey)}</TableCell>
             )}

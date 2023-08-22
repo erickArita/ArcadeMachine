@@ -40,19 +40,18 @@ public class PartidasService : IPartidaService
     }
 
     // clase para eliminar la partida temporal
-    public PartidaTemporal? TerminarPartida(Guid partidaId, Guid usuarioId)
+    public PartidaTemporal TerminarPartida(Guid partidaId, Guid usuarioId)
     {
-        var partida = Partidas.FirstOrDefault(p => p.PartidaId == partidaId);
-        
+        var partida = Partidas.First(p => p.PartidaId == partidaId);
+
         partida.EliminarJugador(usuarioId);
 
         if (!partida.Emparejada())
         {
             Partidas.Remove(partida);
-            return partida;
         }
 
-        return null;
+        return partida;
     }
 
     public PartidaTemporal ActualizarPartida(Guid partidaId, Guid jugadorId, bool gano)

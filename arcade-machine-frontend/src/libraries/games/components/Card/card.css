@@ -1,7 +1,8 @@
 .GameCard {
   border-radius: 6px;
-  width: 254px;
-  height: 309px;
+  min-width: 254px;
+  max-width: 500px;
+  min-height: 309px;
   display: flex;
   flex-direction: column;
   gap: 30px;

@@ -1,3 +1,5 @@
+using ArcadeMachine.Api.Queries;
+using ArcadeMachine.Api.Requests;
 using ArcadeMachine.Core.Partida;
 using ArcadeMachine.Core.Partida.Enums;
 using ArcadeMachine.Core.Partida.Repositorios.PartidaRepositorio;
@@ -11,7 +13,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace ArcadeMachine.Api;
 
-[Route("api/[controller]")]
+[Route("api/[controller]/[action]")]
 [ApiController]
 [Authorize]
 public class GameController : ControllerBase
@@ -37,7 +39,7 @@ public class GameController : ControllerBase
 
 
     [HttpGet]
-    public async Task<OkResult> Emparejar(Guid userId)
+    public async Task<OkResult> Emparejar([FromQuery] Guid userId)
     {
         var username = User.Identity.Name;
         if (username is null)
@@ -55,33 +57,36 @@ public class GameController : ControllerBase
 
         return Ok();
     }
-    
-    [HttpPost]
-    public async void SincronizarJugada(Guid partidaId, Guid jugadorId, PiedraPapelTijeraEnum jugada)
+
+    [HttpGet]
+    public async void SincronizarJugada([FromQuery] SincronizarJugadaQuery query)
     {
-        var partida = _partidaService.ObtenerPartida(partidaId);
-        var contrincante = partida.ObtenerContrincante(jugadorId);
-        await _hubContext.Clients.User(contrincante).SendAsync("SincronizarJugada", jugada);
+        var partida = _partidaService.ObtenerPartida(query.PartidaId);
+        var contrincante = partida.ObtenerContrincante(query.JugadorId);
+        await _hubContext.Clients.User(contrincante).SendAsync("SincronizarJugada", query.Jugada);
     }
-    
-    [HttpPost]
-    public async void ValidarGanador(Guid partidaId, Guid jugadorId, bool resultado)
+
+    [HttpPut]
+    public async void ValidarGanador([FromBody] ValidarGanadorRequest request)
     {
-        var partidaActualizada = _partidaService.ActualizarPartida(partidaId, jugadorId, resultado);
+        var partidaActualizada =
+            _partidaService.ActualizarPartida(request.PartidaId, request.JugadorId, request.Resultado);
         var user1 = partidaActualizada.userName1;
         var user2 = partidaActualizada.userName2;
-        
-        await _hubContext.Clients.Users(user1, user2).SendAsync("Score", partidaActualizada.ResultadoJugador1, partidaActualizada.ResultadoJugador2);
+
+        await _hubContext.Clients.Users(user1, user2).SendAsync("Score", partidaActualizada.ResultadoJugador1,
+            partidaActualizada.ResultadoJugador2);
     }
 
     [HttpPost]
-    public async Task<Score> TerminarPartida(Guid partidaId, Guid jugadorId)
+    public async Task<Score> TerminarPartida([FromBody] TerminarPartidaRequest request)
     {
-        var partida = _partidaService.TerminarPartida(partidaId, jugadorId);
-        if (partida is not null)
+        var partida = _partidaService.TerminarPartida(request.PartidaId, request.JugadorId);
+        if (!partida.Emparejada())
         {
             await _partidaRepositorio.CrearPartida(partida);
         }
+
         var score = _partidaService.ObtenerScore(partida);
         return score;
     }
