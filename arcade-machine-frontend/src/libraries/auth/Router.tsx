@@ -33,6 +33,11 @@ export const Router = createBrowserRouter([
         index: true,
         element: <Juegos />,
       },
+
+      {
+        path: ":tipoJuego",
+        element: <Juegos />,
+      },
     ],
   },
 ]);

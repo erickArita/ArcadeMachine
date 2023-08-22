@@ -1,9 +1,9 @@
 import { Button } from "@nextui-org/react";
-import { CardContainer } from "../libraries/games/CardContainer/CardContainer";
-import { useSignalREffect } from "../providers/SignalProvider";
+ import { useSignalREffect } from "../providers/SignalProvider";
 import { useLazyEmparejarQuery } from "./api/partidas";
 import { useUser } from "../providers/UserProvider";
 import { useState } from "react";
+import { CardContainer } from "../libraries/games/components/CardContainer/CardContainer";
 
 export const Juegos = () => {
   const { user } = useUser();
