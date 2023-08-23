@@ -1,5 +1,8 @@
+using System.Collections.Immutable;
+using ArcadeMachine.Api.Game.Responses;
 using ArcadeMachine.Core.Partida.Models;
 using ArcadeMachine.Infraestructure.Persistence;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ArcadeMachine.Core.Partida.Repositorios.PartidaRepositorio;
@@ -30,23 +33,69 @@ public class PartidasRepositorio : IPartidaRepositorio
     }
 
     //traer las ultimas 10 partidas de un usario
-    public async Task<List<Domain.Entities.Partida>> ObtenerUltimasPartidas(string usuarioId)
+    
+    
+    public async Task<List<UserHistory>> ObtenerUltimasPartidas(Guid juegoId, string jugadorId)
     {
-        var partidas = await _appContext.Partidas
-            .Where(p => p.usuario1Id == usuarioId || p.usuario2Id == usuarioId)
-            .OrderByDescending(p => p.Id)
+        var ultimasPartidas = await _appContext.Partidas
+            .Where(p => p.juegoId == juegoId && (p.usuario1Id == jugadorId || p.usuario2Id == jugadorId))
+            .OrderByDescending(p => p.fechaPartida)
             .Take(10)
+            .Select(p => new UserHistory
+            (
+                p.Id,
+                p.usuario1Id == jugadorId ? p.usuario2.UserName : p.usuario1.UserName,
+                jugadorId == p.usuario1Id ? p.puntajeUsuario1 > p.puntajeUsuario2 : p.puntajeUsuario2 > p.puntajeUsuario1
+            ))
             .ToListAsync();
-        return partidas;
+
+        return ultimasPartidas;
     }
+    
     // traer los mejores 10 jugadores por juego
-    public async Task<List<Domain.Entities.Partida>> ObtenerMejoresJugadoresPorJuego(Guid juegoId)
+    public async Task<List<MundialTop>> ObtenerMejoresJugadoresPorJuego(Guid juegoId)
     {
-        var partidas = await _appContext.Partidas
+        var userIds = await _appContext.Partidas
             .Where(p => p.juegoId == juegoId)
-            .OrderByDescending(p => p.puntajeUsuario1)
+            .SelectMany(p => new[] { p.usuario1Id, p.usuario2Id })
+            .Distinct()
+            .ToListAsync();
+
+        var usuarios = await _appContext.Users
+            .Where(u => userIds.Contains(u.Id))
+            .ToListAsync();
+
+        var ranking = await _appContext.Partidas
+            .Where(p => p.juegoId == juegoId)
+            .GroupBy(p => p.usuario1Id)
+            .Select(g => new
+            {
+                UsuarioId = g.Key,
+                PuntajeTotal = g.Sum(p => p.puntajeUsuario1)
+            })
+            .Union(_appContext.Partidas
+                .Where(p => p.juegoId == juegoId)
+                .GroupBy(p => p.usuario2Id)
+                .Select(g => new
+                {
+                    UsuarioId = g.Key,
+                    PuntajeTotal = g.Sum(p => p.puntajeUsuario2)
+                }))
+            .GroupBy(x => x.UsuarioId)
+            .Select(g => new
+            {
+                UsuarioId = g.Key,
+                PuntajeTotal = g.Sum(x => x.PuntajeTotal)
+            })
+            .OrderByDescending(x => x.PuntajeTotal)
             .Take(10)
             .ToListAsync();
-        return partidas;
+        
+        var mejoresJugadores = ranking
+            .Select(x => usuarios.FirstOrDefault(u => u.Id == x.UsuarioId))
+            .Select((u, i) => new MundialTop(u.Id, i + 1, u.UserName))
+            .ToList()?? new List<MundialTop>();
+
+        return mejoresJugadores;
     }
 }
