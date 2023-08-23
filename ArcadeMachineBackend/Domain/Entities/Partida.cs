@@ -18,4 +18,5 @@ public class Partida
     public IdentityUser usuario1 { get; set; }
     public IdentityUser usuario2 { get; set; }
     public MiniJuego juego { get; set; }
+    public DateTime fechaPartida { get; set; }
 }
