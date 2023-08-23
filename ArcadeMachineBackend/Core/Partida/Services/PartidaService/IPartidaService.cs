@@ -2,13 +2,14 @@
 using ArcadeMachine.Core.Partida.Models;
 using ArcadeMachine.Core.Partida.Services.PartidaService.Modelos;
 
-namespace ArcadeMachine.Core.Partida;
+namespace ArcadeMachine.Core.Partida.Services.PartidaService;
 
 public interface IPartidaService
 {
     PartidaTemporal Emparejar(Guid jugadorId, string username);
-    PartidaTemporal ActualizarPartida(Guid partidaId, Guid jugadorId, bool gano);
+    PartidaTemporal ActualizarPartida(Guid partidaId, Guid jugadorId, ResultadoPartidaEnum gano);
     PartidaTemporal ObtenerPartida(Guid partidaId);
     PartidaTemporal TerminarPartida(Guid partidaId, Guid usuarioId);
     Score ObtenerScore(PartidaTemporal partidaActualizada);
+    void ForzarTerminarPartida(string userName);
 }

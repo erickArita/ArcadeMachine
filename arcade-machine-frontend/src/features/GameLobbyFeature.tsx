@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { juegoSeleccionadoAdapter } from "../libraries/games/adapters/juegoSeleccionadoAdapter";
 import { GameLobby } from "../libraries/games/components/GameLobby/GameLobby";
+import { JuegoParams } from "../libraries/games/constants/juegoParams";
 import { TipoJuegoEnum } from "../libraries/games/enums/TipoJuegoEnum";
+import { WaveColorEnum } from "../libraries/games/enums/waveColor";
 import { useSignalREffect } from "../providers/SignalProvider";
 import { useUser } from "../providers/UserProvider";
-import { useLazyEmparejarQuery } from "./api/Partidas/partidas";
-import { JuegoParams } from "../libraries/games/constants/juegoParams";
 import { useWaves } from "../providers/WavesProvider";
-import { WaveColorEnum } from "../libraries/games/enums/waveColor";
+import { useLazyEmparejarQuery } from "./api/Partidas/partidas";
 
 export const GameLobbyFeature = () => {
   const { tipoJuego } = useParams<{ tipoJuego: string }>();
@@ -26,9 +26,11 @@ export const GameLobbyFeature = () => {
 
   useSignalREffect(
     "Match",
-    (message) => {
+    (partidaId, tipoJugador) => {
+      console.log("Match", partidaId, tipoJugador);
+
       setBuscandoPartida(false);
-      navigate(`/partida/${message.partidaId}`);
+      navigate(`partida/${partidaId}/${tipoJugador}`);
     },
     []
   );

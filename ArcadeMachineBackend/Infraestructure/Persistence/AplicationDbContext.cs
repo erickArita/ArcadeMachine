@@ -18,7 +18,11 @@ public class AplicationDbContext : IdentityDbContext
 
         modelBuilder.Entity<Partida>().HasOne(p => p.usuario1).WithMany().HasForeignKey(p => p.usuario1Id);
         modelBuilder.Entity<Partida>().HasOne(p => p.usuario2).WithMany().HasForeignKey(p => p.usuario2Id);
+        
+       
+        
     }
+    
 
     public DbSet<Partida> Partidas { get; set; }
     public DbSet<MiniJuego> Minijuegos { get; set; }

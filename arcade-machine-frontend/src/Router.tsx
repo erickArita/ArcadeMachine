@@ -51,7 +51,7 @@ export const Router = createBrowserRouter([
         ],
       },
       {
-        path: ":tipoJuego/partida/:partidaId",
+        path: ":tipoJuego/partida/:partidaId/:tipoJugador",
         element: (
           <Layout renderNavbar={false}>
             <PiedraPepelpTijera />
