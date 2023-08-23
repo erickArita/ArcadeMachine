@@ -1,6 +1,7 @@
 using System.Text;
 using ArcadeMachine.Api;
 using ArcadeMachine.Core.Autentication.Services;
+using ArcadeMachine.Core.Autentication.Utilities;
 using ArcadeMachine.Core.Partida;
 using ArcadeMachine.Core.Partida.Repositorios.PartidaRepositorio;
 using ArcadeMachine.Core.Partida.Services.PartidaService;
@@ -45,6 +46,7 @@ builder.Services.AddDbContext<AplicationDbContext>(opt =>
 
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt => opt.SignIn.RequireConfirmedAccount = false)
+    .AddErrorDescriber<ErrorMessages>()
     .AddEntityFrameworkStores<AplicationDbContext>()
     .AddDefaultTokenProviders();
 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ArcadeMachine.Core.Autentication;
+namespace ArcadeMachine.Core.Autentication.Models;
 
 public class RegisterUser
 {
