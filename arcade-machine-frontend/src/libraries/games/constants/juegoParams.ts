@@ -1,8 +1,10 @@
 import { CardProps } from "../components/Card/Card";
 import { TipoJuegoEnum } from "../enums/TipoJuegoEnum";
+import { WaveColorEnum } from "../enums/waveColor";
 
 export interface JuegoParams extends CardProps {
   tipoJuego: TipoJuegoEnum;
+  waveColor: WaveColorEnum;
 }
 
 export const juegos: JuegoParams[] = [
@@ -12,6 +14,7 @@ export const juegos: JuegoParams[] = [
     img: "/piedra.png",
     shadowColor: "#dcc1fd",
     title: "Piedra Papel Tijera",
+    waveColor: WaveColorEnum.PURPLE,
   },
   {
     tipoJuego: TipoJuegoEnum.XO,
@@ -19,6 +22,7 @@ export const juegos: JuegoParams[] = [
     img: "/ahorcado.png",
     shadowColor: "#ffe49e",
     title: "XO",
+    waveColor: WaveColorEnum.YELLOW,
   },
   {
     tipoJuego: TipoJuegoEnum.AHORCADO,
@@ -26,5 +30,6 @@ export const juegos: JuegoParams[] = [
     img: "dinosaurio.png",
     shadowColor: "#fba4ea",
     title: "Ahorcado",
+    waveColor: WaveColorEnum.PINK,
   },
 ];

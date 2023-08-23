@@ -1,12 +1,14 @@
 import { Outlet, createBrowserRouter } from "react-router-dom";
-import { RequiredAuth } from "./libraries/auth";
 import { Layout } from "./components/Layout";
+import { GameLobbyFeature } from "./features/GameLobbyFeature";
 import { Juegos } from "./features/Juegos";
+import { PiedraPepelpTijera } from "./features/PiedraPepelpTijera";
 import { Login } from "./libraries/Autenticacion/Login/Login";
 import { Registro } from "./libraries/Autenticacion/Registro/Registro";
+import { RequiredAuth } from "./libraries/auth";
 import { SignalRProvider } from "./providers/SignalProvider";
 import { UserProvider } from "./providers/UserProvider";
-import { GameLobbyFeature } from "./features/GameLobbyFeature";
+import { WavesProvider } from "./providers/WavesProvider";
 
 export const Router = createBrowserRouter([
   {
@@ -22,22 +24,39 @@ export const Router = createBrowserRouter([
       <RequiredAuth loaderComponent={<p>loading</p>}>
         <UserProvider>
           <SignalRProvider>
-            <Layout>
+            <WavesProvider>
               <Outlet />
-            </Layout>
+            </WavesProvider>
           </SignalRProvider>
         </UserProvider>
       </RequiredAuth>
     ),
     children: [
       {
-        index: true,
-        element: <Juegos />,
+        path: "/",
+        element: (
+          <Layout>
+            <Outlet />
+          </Layout>
+        ),
+        children: [
+          {
+            index: true,
+            element: <Juegos />,
+          },
+          {
+            path: ":tipoJuego",
+            element: <GameLobbyFeature />,
+          },
+        ],
       },
-
       {
-        path: ":tipoJuego",
-        element: <GameLobbyFeature />,
+        path: ":tipoJuego/partida/:partidaId",
+        element: (
+          <Layout renderNavbar={false}>
+            <PiedraPepelpTijera />
+          </Layout>
+        ),
       },
     ],
   },

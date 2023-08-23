@@ -26,8 +26,8 @@ export const GameLobby = ({
   rankingData,
 }: GameLobbyProps) => {
   return (
-    <section className="flex flex-col gap-10">
-      <h3>{title}</h3>
+    <section className="flex flex-col gap-10 bg-white">
+      <h3 className="text-center text-black font-semibold text-2xl">{title}</h3>
       <div className="flex justify-around">
         <div className="w-1/6">
           <Historial data={historialData} />
