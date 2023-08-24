@@ -1,8 +1,8 @@
 export interface CardProps {
-  title: string;
-  img: string;
-  color: string;
-  shadowColor: string;
+  title?: string;
+  img?: string;
+  color?: string;
+  shadowColor?: string;
   oncClick?: () => void;
 }
 
@@ -24,6 +24,6 @@ export const Card = ({
     onClick={oncClick}
   >
     <h2>{title}</h2>
-    <img src={img} alt={`img del juego ${title}`} />
+    <img src={"data:image/png;base64," + img} alt={`img del juego ${title}`} />
   </div>
 );

@@ -8,10 +8,10 @@ public class PartidasService : IPartidaService
 {
     private List<PartidaTemporal> Partidas = new();
 
-    public PartidaTemporal Emparejar(Guid jugadorId, string username)
+    public PartidaTemporal Emparejar(Guid jugadorId, string username, Guid juegoId)
     {
         // tupla de partidas y hay pertidas disponibles
-        var (partida, hayPartidasDisponibles) = HayPartidasDisponibles();
+        var (partida, hayPartidasDisponibles) = HayPartidasDisponibles(juegoId);
 
         if (hayPartidasDisponibles)
         {
@@ -20,20 +20,21 @@ public class PartidasService : IPartidaService
         }
         else
         {
-            partida = CrearPartida(jugadorId, username);
+            partida = CrearPartida(jugadorId, username, juegoId);
             return partida;
         }
     }
 
-    private (PartidaTemporal, bool) HayPartidasDisponibles()
+    private (PartidaTemporal?, bool) HayPartidasDisponibles(Guid juegoId)
     {
-        var partida = Partidas.FirstOrDefault(p => !p.Emparejada());
+        var partida = Partidas.Where(p => p.MinijuegoId == juegoId).FirstOrDefault(p => !p.Emparejada());
         return (partida, partida != null);
     }
 
-    private PartidaTemporal CrearPartida(Guid jugadorId, string username)
+    private PartidaTemporal CrearPartida(Guid jugadorId, string username, Guid juegoId)
     {
         var partida = new PartidaTemporal();
+        partida.MinijuegoId = juegoId;
         partida.AgregarJugador(jugadorId, username, TipoJugadorEnum.Anfitrion);
         Partidas.Add(partida);
         return partida;
@@ -54,11 +55,11 @@ public class PartidasService : IPartidaService
         return partida;
     }
 
-    public PartidaTemporal ActualizarPartida(Guid partidaId, Guid jugadorId, bool gano)
+    public PartidaTemporal ActualizarPartida(Guid partidaId, Guid jugadorId, ResultadoPartidaEnum gano)
     {
         var partida = ObtenerPartida(partidaId);
 
-        if (partida.ObtenerTipoJugar(jugadorId) == TipoJugadorEnum.Anfitrion && gano)
+        if (partida.ObtenerTipoJugar(jugadorId) == TipoJugadorEnum.Anfitrion && gano == ResultadoPartidaEnum.Victoria)
         {
             partida.ResultadoJugador1++;
         }
@@ -97,5 +98,23 @@ public class PartidasService : IPartidaService
     {
         var partida = Partidas.First(p => p.PartidaId == partidaId);
         return partida;
+    }
+
+    private PartidaTemporal? UsuarioEnPartida(string userName)
+    {
+        return Partidas?.FirstOrDefault(
+            p => p.userName1?.ToString() == userName || p.userName2?.ToString() == userName);
+    }
+
+    public void ForzarTerminarPartida(string userName)
+    {
+        var partida = UsuarioEnPartida(userName);
+        if (partida is null) return;
+        if (partida.Emparejada()) return;
+
+        if (partida is not null)
+        {
+            Partidas.Remove(partida);
+        }
     }
 }

@@ -1,51 +1,69 @@
-import { useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
-import { juegoSeleccionadoAdapter } from "../libraries/games/adapters/juegoSeleccionadoAdapter";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { GameLobby } from "../libraries/games/components/GameLobby/GameLobby";
-import { TipoJuegoEnum } from "../libraries/games/enums/TipoJuegoEnum";
+import { WaveColorEnum } from "../libraries/games/enums/waveColor";
 import { useSignalREffect } from "../providers/SignalProvider";
 import { useUser } from "../providers/UserProvider";
-import { useLazyEmparejarQuery } from "./api/Partidas/partidas";
-import { JuegoParams } from "../libraries/games/constants/juegoParams";
+import { useWaves } from "../providers/WavesProvider";
+import {
+  useLazyEmparejarQuery,
+  useObtenerJuegoPorIdQuery,
+} from "./api/Partidas/partidas";
 
 export const GameLobbyFeature = () => {
   const { tipoJuego } = useParams<{ tipoJuego: string }>();
   const { user } = useUser();
+  const navigate = useNavigate();
+
+  const { data: juego, isLoading } = useObtenerJuegoPorIdQuery(
+    {
+      juegoId: tipoJuego,
+    },
+    {
+      skip: !tipoJuego,
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   const [emparejarQuery] = useLazyEmparejarQuery();
+
+  const { setWaveColor } = useWaves();
+  useEffect(() => {
+    setWaveColor(WaveColorEnum.PURPLE);
+  }, []);
 
   const [buscandoPartida, setBuscandoPartida] = useState(false);
 
   useSignalREffect(
     "Match",
-    (message) => {
-      console.log(message);
+    (partidaId, tipoJugador) => {
+      console.log("Match", partidaId, tipoJugador);
+
       setBuscandoPartida(false);
+      navigate(`partida/${partidaId}/${tipoJugador}`);
     },
     []
   );
 
-  const [juegoSeleccionadoProps, seEncontro] = juegoSeleccionadoAdapter(
-    Number(tipoJuego) as unknown as TipoJuegoEnum
-  );
-
-  if (!seEncontro) {
-    return <Navigate to="/" />;
-  }
-
   const onEmparejar = () => {
-    if (!user) return;
-    emparejarQuery({ userId: user.userId });
+    if (!user || !tipoJuego) return;
+    emparejarQuery({ userId: user.userId, juegoId: tipoJuego });
     setBuscandoPartida(true);
   };
 
   return (
     <GameLobby
       buscandoPartida={buscandoPartida}
-      card={juegoSeleccionadoProps as JuegoParams}
-      title={juegoSeleccionadoProps?.title}
+      card={{
+        color: juego?.color,
+        img: juego?.img,
+        shadowColor: juego?.shadowColor,
+        title: juego?.nombre,
+      }}
+      title={juego?.nombre || ""}
       onBuscarPartida={onEmparejar}
       historialData={[]}
+      isLoading={isLoading}
       rankingData={[]}
     />
   );

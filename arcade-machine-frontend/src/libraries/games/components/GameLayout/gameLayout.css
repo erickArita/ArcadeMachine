@@ -1,0 +1,35 @@
+.gameLayout {
+  position: relative;
+
+  /* create 2 bloques con abter y before que esten detras del contenido */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100%;
+    background-color: #eff6ff;
+    z-index: 0;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background-color: #fff7ed;
+    z-index: 0;
+  }
+
+  height: 100vh;
+}
+
+.playerName {
+  color: #000;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+}

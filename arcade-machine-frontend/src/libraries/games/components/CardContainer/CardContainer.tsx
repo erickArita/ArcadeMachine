@@ -1,14 +1,19 @@
-import { TipoJuegoEnum } from "../../enums/TipoJuegoEnum";
+import { Loader } from "../../../../components/Loader";
+import { Minijuego } from "../../../../features/api/Partidas/models/Minijuego";
 import { Card } from "../Card/Card";
 
 interface CardContainerProps {
   titulo: string;
-  onSelectJuego?: (tipo: TipoJuegoEnum) => void;
+  onSelectJuego?: (juegoId: string) => void;
+  miniJuegos?: Minijuego[];
+  isLoading?: boolean;
 }
 
 export const CardContainer = ({
   titulo,
   onSelectJuego,
+  miniJuegos,
+  isLoading,
 }: CardContainerProps) => {
   return (
     <section className="grid flex-1 justify-center h-full auto-rows-auto">
@@ -17,34 +22,20 @@ export const CardContainer = ({
           {titulo}
         </h1>
       </div>
-      <div className="pb-20 grid grid-cols-3  max-w-7xl   gap-32  row-span-4 ">
-        <div className="grid  items-end">
-          <Card
-            color="#9b57f0"
-            img="/piedra.png"
-            shadowColor="#dcc1fd"
-            title="Piedra Papel Tijera"
-            oncClick={() => onSelectJuego?.(TipoJuegoEnum.PiedraPapelTijera)}
-          />
-        </div>
-        <div className="grid items-start">
-          <Card
-            color="#ffb900"
-            img="/ahorcado.png"
-            shadowColor="#ffe49e"
-            title="Piedra Papel Tijera"
-            oncClick={() => onSelectJuego?.(TipoJuegoEnum.AHORCADO)}
-          />
-        </div>
-        <div className="grid  items-end">
-          <Card
-            color="#dd2bbc"
-            img="dinosaurio.png"
-            shadowColor="#fba4ea"
-            title="Piedra Papel Tijera"
-            oncClick={() => onSelectJuego?.(TipoJuegoEnum.XO)}
-          />
-        </div>
+      <div className="pb-20 grid grid-cols-3  max-w-7xl   gap-32  row-span-4  ">
+        <Loader isLoading={!!isLoading}>
+          {miniJuegos?.map((minijuego, i) => (
+            <div className={`grid  ${!(i % 2) ? "items-end" : "items-start"}`}>
+              <Card
+                color={minijuego.color}
+                img={minijuego.img}
+                shadowColor={minijuego.shadowColor}
+                title={minijuego.nombre}
+                oncClick={() => onSelectJuego?.(minijuego.id)}
+              />
+            </div>
+          ))}
+        </Loader>
       </div>
     </section>
   );

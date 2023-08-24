@@ -1,6 +1,7 @@
 using ArcadeMachine.Api.Game.Responses;
 using ArcadeMachine.Core.Partida;
 using ArcadeMachine.Core.Partida.Repositorios.PartidaRepositorio;
+using ArcadeMachine.Core.Partida.Services.PartidaService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ArcadeMachine.Api.Ranking;

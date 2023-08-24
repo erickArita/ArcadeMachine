@@ -1,7 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using ArcadeMachine.Core.Autentication;
+using ArcadeMachine.Core.Autentication.Models;
 using ArcadeMachine.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -73,7 +73,6 @@ public class AuthenticationController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginUser loginUser)
     {
         var result = await _signInManager.PasswordSignInAsync(loginUser.UserName, loginUser.Password, false, false);
-
         if (result.Succeeded)
         {
             var user = (await _userManager.FindByNameAsync(loginUser.UserName));

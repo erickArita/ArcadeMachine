@@ -1,5 +1,5 @@
 import { Navigate, useNavigate } from "react-router-dom";
- import { Input } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
 import { Section } from "../../../components/Section";
 import { useAuth } from "../../auth";
 import { useForm } from "react-hook-form";
@@ -18,7 +18,7 @@ export const Login = () => {
     resolver: yupResolver(loginSchema),
   });
 
-  const { login, isAuthenticated } = useAuth();
+  const { login, isAuthenticated, isLoading } = useAuth();
 
   const onCrearCuenta = () => {
     navigate("/registro");
@@ -45,6 +45,7 @@ export const Login = () => {
           title="Bienvenido a ArcadeMachine!"
           onCrearCuenta={onCrearCuenta}
           isLogin
+          isLoading={isLoading}
         >
           <Input
             labelPlacement="outside"

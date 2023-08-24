@@ -1,3 +1,5 @@
-﻿namespace ArcadeMachine.Api.Game.Requests;
+﻿using ArcadeMachine.Core.Partida.Enums;
 
-public record ValidarGanadorRequest(Guid PartidaId, Guid JugadorId, bool Resultado);
+namespace ArcadeMachine.Api.Game.Requests;
+
+public record ValidarGanadorRequest(Guid PartidaId, Guid JugadorId, ResultadoPartidaEnum Resultado);

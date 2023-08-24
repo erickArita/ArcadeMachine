@@ -1,4 +1,5 @@
 import { baseApi } from "../../../store";
+import { Minijuego } from "./models/Minijuego";
 import { ScoreResponse } from "./models/ScoresResponse";
 import { SincronizarJugadaRequest } from "./models/SincronizarJugadaRequest";
 import { ValidarGanadorRequest } from "./models/ValidarGanadorRequest";
@@ -15,10 +16,11 @@ const gamesApi = gamesApiWithTags.injectEndpoints({
       boolean,
       {
         userId: string;
+        juegoId: string;
       }
     >({
-      query: ({ userId }) => ({
-        url: `api/game/emparejar?userId=${userId}`,
+      query: ({ userId, juegoId }) => ({
+        url: `api/game/emparejar?userId=${userId}&juegoId=${juegoId}`,
       }),
     }),
     sincronizarJugada: builder.query<void, SincronizarJugadaRequest>({
@@ -46,6 +48,16 @@ const gamesApi = gamesApiWithTags.injectEndpoints({
         },
       }),
     }),
+    obtenerJuegos: builder.query<Minijuego[], void>({
+      query: () => ({
+        url: `${controllerName}/ObtenerMiniJuegos`,
+      }),
+    }),
+    obtenerJuegoPorId: builder.query<Minijuego, { juegoId?: string }>({
+      query: ({ juegoId }) => ({
+        url: `${controllerName}/ObtenerMiniJuego?juegoId=${juegoId}`,
+      }),
+    }),
   }),
 });
 
@@ -54,4 +66,6 @@ export const {
   useValidarGanadorMutation,
   useLazySincronizarJugadaQuery,
   useTerminarPartidaMutation,
+  useObtenerJuegosQuery,
+  useObtenerJuegoPorIdQuery,
 } = gamesApi;

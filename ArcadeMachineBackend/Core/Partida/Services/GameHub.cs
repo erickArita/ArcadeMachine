@@ -1,19 +1,38 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+﻿using ArcadeMachine.Core.Partida.Enums;
+using ArcadeMachine.Core.Partida.Services.PartidaService;
 using Microsoft.AspNetCore.SignalR;
 
-namespace ArcadeMachine.Api;
+namespace ArcadeMachine.Core.Partida.Services;
 
 public class GameHub : Hub
 {
+    private readonly IPartidaService _partidaService;
+
+    public GameHub(IPartidaService partidaService)
+    {
+        _partidaService = partidaService;
+    }
+
     public override async Task OnConnectedAsync()
     {
         var userId = Context.User?.Identity?.Name;
         await base.OnConnectedAsync();
     }
 
-    public async void SendMessage(string message, string userId)
+    public async void SincronizarJugada(SyncronizationType type, Guid PartidaId, Guid JugadorId, int query)
     {
-        await Clients.User(userId).SendAsync("ReceiveMessage", message);
+        var partida = _partidaService.ObtenerPartida(PartidaId);
+        var contrincante = partida.ObtenerContrincante(JugadorId);
+
+        await Clients.User(contrincante).SendAsync("SincronizarJugada", type, query);
+    } 
+    
+
+    public override Task OnDisconnectedAsync(Exception? exception)
+    {
+        var userName = Context.User?.Identity?.Name;
+
+        _partidaService.ForzarTerminarPartida(userName);
+        return base.OnDisconnectedAsync(exception);
     }
 }

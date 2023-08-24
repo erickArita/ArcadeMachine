@@ -1,8 +1,7 @@
-using System.Collections.Immutable;
 using ArcadeMachine.Api.Game.Responses;
 using ArcadeMachine.Core.Partida.Models;
+using ArcadeMachine.Domain.Entities;
 using ArcadeMachine.Infraestructure.Persistence;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace ArcadeMachine.Core.Partida.Repositorios.PartidaRepositorio;
@@ -33,8 +32,8 @@ public class PartidasRepositorio : IPartidaRepositorio
     }
 
     //traer las ultimas 10 partidas de un usario
-    
-    
+
+
     public async Task<List<UserHistory>> ObtenerUltimasPartidas(Guid juegoId, string jugadorId)
     {
         var ultimasPartidas = await _appContext.Partidas
@@ -45,13 +44,15 @@ public class PartidasRepositorio : IPartidaRepositorio
             (
                 p.Id,
                 p.usuario1Id == jugadorId ? p.usuario2.UserName : p.usuario1.UserName,
-                jugadorId == p.usuario1Id ? p.puntajeUsuario1 > p.puntajeUsuario2 : p.puntajeUsuario2 > p.puntajeUsuario1
+                jugadorId == p.usuario1Id
+                    ? p.puntajeUsuario1 > p.puntajeUsuario2
+                    : p.puntajeUsuario2 > p.puntajeUsuario1
             ))
             .ToListAsync();
 
         return ultimasPartidas;
     }
-    
+
     // traer los mejores 10 jugadores por juego
     public async Task<List<MundialTop>> ObtenerMejoresJugadoresPorJuego(Guid juegoId)
     {
@@ -90,12 +91,25 @@ public class PartidasRepositorio : IPartidaRepositorio
             .OrderByDescending(x => x.PuntajeTotal)
             .Take(10)
             .ToListAsync();
-        
+
         var mejoresJugadores = ranking
             .Select(x => usuarios.FirstOrDefault(u => u.Id == x.UsuarioId))
             .Select((u, i) => new MundialTop(u.Id, i + 1, u.UserName))
-            .ToList()?? new List<MundialTop>();
+            .ToList() ?? new List<MundialTop>();
 
         return mejoresJugadores;
+    }
+
+    public async Task<List<MiniJuego>> ObtenerMiniJuegos()
+    {
+        var minijuegos = await _appContext.Minijuegos.ToListAsync();
+        return minijuegos;
+    }
+
+    public async Task<MiniJuego> ObtenerMiniJuego(Guid minijuegoId)
+    {
+        var minijuego = await _appContext.Minijuegos.FirstOrDefaultAsync(m => m.Id == minijuegoId) ??
+                        throw new Exception("No se encontro el minijuego");
+        return minijuego;
     }
 }
