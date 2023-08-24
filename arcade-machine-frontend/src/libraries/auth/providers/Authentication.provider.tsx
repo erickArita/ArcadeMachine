@@ -13,6 +13,7 @@ import { useTaskScheduler } from "../hooks/useTaskSheduler";
 import { ILoginFormRequest } from "../types/LogInRequest.type";
 import { useInterval } from "../hooks/useInterval";
 import { IRegisterFormRequest } from "../types/RegisterRequest";
+import { CustomError } from "../../../services/authFunctions";
 
 interface IAuthenticationProvider {
   customLoginFn: (data: {
@@ -29,6 +30,8 @@ export const AuthenticationProvider: FC<
 > = ({ children, customLoginFn, refreshTokenFn, isDev, customRegisterFn }) => {
   const { isAuthenticated, isExpiredToken, expireTime, refreshToken, token } =
     getToken();
+
+  const [errors, setErrors] = useState<CustomError[]>([]);
 
   const [localIsAuthenticated, setLocalIsAuthenticated] =
     useState<boolean>(isAuthenticated);
@@ -140,10 +143,12 @@ export const AuthenticationProvider: FC<
         password,
         userName: useaname,
       });
+
       if (access_token) handleLogin(access_token);
       setLoading(false);
     } catch (error) {
-      toast.error(String(error));
+      console.log(error);
+      setErrors(error as CustomError[]);
     } finally {
       setLoading(false);
     }
@@ -158,6 +163,7 @@ export const AuthenticationProvider: FC<
         isLoading: isLoading,
         register: onRegister,
         token: token as string,
+        errors,
       }}
     >
       {children}

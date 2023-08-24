@@ -1,9 +1,11 @@
 import { useCallback, useState } from "react";
 import { IError } from "../types/Error.type";
+import { CustomError } from "../../../services/authFunctions";
 
 export interface ILoginResponse {
   access_token: string;
   expired_in: Date;
+  error?: CustomError[];
 }
 
 interface ILoginMutation {

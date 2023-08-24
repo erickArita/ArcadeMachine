@@ -1,3 +1,4 @@
+import { toast } from "react-hot-toast";
 import { API_URL } from "../globals/environment";
 
 export interface Auth {
@@ -36,6 +37,11 @@ export const login = async ({
   };
 };
 
+export interface CustomError {
+  code: string;
+  description: string;
+}
+
 export const register = async ({
   email,
   password,
@@ -45,22 +51,36 @@ export const register = async ({
   email: string;
   password: string;
 }) => {
-  const response = await fetch(API_URL + "/api/Authentication/Login", {
+  const response = await fetch(API_URL + "/api/Authentication/register", {
     headers: {
       accept: "*/*",
       "Content-Type": "application/json",
     },
     method: "POST",
     body: JSON.stringify({
-      userName: userName,
+      username: userName,
       password: password,
       email: email,
     }),
   });
 
   const data = (await response.json()) as BackendResponse<Auth>;
+  let errors: CustomError[] = [];
+
+  if (data?.value?.status === "Error") {
+    if (data.value.data === null) {
+      console.log(data.value.message);
+
+      toast.error(data.value.message);
+    } else {
+      errors = data.value.data as CustomError[];
+    }
+    throw errors;
+  }
+
   return {
     access_token: data.data.token,
     expired_in: data.data.expiration,
+    errors: errors,
   };
 };

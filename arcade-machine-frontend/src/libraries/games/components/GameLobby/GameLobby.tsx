@@ -7,14 +7,16 @@ import {
   Ranking,
   RankingData,
 } from "../Rankings/Rankings";
+import { Loader } from "../../../../components/Loader";
 
 interface GameLobbyProps {
   title?: string;
-  card: CardProps;
+  card: Partial<CardProps>;
   onBuscarPartida: () => void;
   buscandoPartida: boolean;
   historialData?: HistorialData[];
   rankingData?: RankingData[];
+  isLoading?: boolean;
 }
 
 export const GameLobby = ({
@@ -24,41 +26,46 @@ export const GameLobby = ({
   buscandoPartida,
   historialData,
   rankingData,
+  isLoading,
 }: GameLobbyProps) => {
   return (
-    <section className="flex flex-col gap-10 bg-white">
-      <h3 className="text-center text-black font-semibold text-2xl">{title}</h3>
-      <div className="flex justify-around">
-        <div className="w-1/6">
-          <Historial data={historialData} />
+    <Loader isLoading={isLoading}>
+      <section className="flex flex-col gap-10 bg-white">
+        <h3 className="text-center text-black font-semibold text-2xl">
+          {title}
+        </h3>
+        <div className="flex justify-around">
+          <div className="w-1/6">
+            <Historial data={historialData} />
+          </div>
+          <div>
+            <Card
+              color={card?.color}
+              img={card?.img}
+              shadowColor={card?.shadowColor}
+              title={title}
+            />
+          </div>
+          <div className="w-1/6">
+            <Ranking data={rankingData} />
+          </div>
         </div>
-        <div>
-          <Card
-            color={card.color}
-            img={card.img}
-            shadowColor={card.shadowColor}
-            title={title}
-          />
+        <div className="self-center">
+          <Button
+            className="bg-gradient-to-tr
+          from-pink-500
+          to-yellow-500
+          text-white shadow-lg"
+            radius="sm"
+            size="lg"
+            startContent={<UserIcon />}
+            onClick={onBuscarPartida}
+            isLoading={buscandoPartida}
+          >
+            Buscar partida
+          </Button>
         </div>
-        <div className="w-1/6">
-          <Ranking data={rankingData} />
-        </div>
-      </div>
-      <div className="self-center">
-        <Button
-          className="bg-gradient-to-tr
-        from-pink-500
-        to-yellow-500
-        text-white shadow-lg"
-          radius="sm"
-          size="lg"
-          startContent={<UserIcon />}
-          onClick={onBuscarPartida}
-          isLoading={buscandoPartida}
-        >
-          Buscar partida
-        </Button>
-      </div>
-    </section>
+      </section>
+    </Loader>
   );
 };
