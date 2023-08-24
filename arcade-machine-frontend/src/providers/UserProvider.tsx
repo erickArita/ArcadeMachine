@@ -1,6 +1,8 @@
 import { FC, PropsWithChildren, createContext, useContext } from "react";
+import { Navigate } from "react-router-dom";
 import { useGetUserDataQuery } from "../features/api/autentication/autorizacion";
-import { AuthenticationResponse } from "../features/api/autentication/models/Autenticationresponse";
+import { useAuth } from "../libraries/auth";
+import { AuthenticationResponse } from "../features/api/autentication/models/AutenticationResponse";
 
 interface UserProviderProps {
   user: AuthenticationResponse | undefined;
@@ -18,7 +20,15 @@ export const useUser = () => {
 };
 
 export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { data, isFetching } = useGetUserDataQuery();
+  const { logOut } = useAuth();
+  const { data, isFetching, isError } = useGetUserDataQuery();
+  console.log(isError);
+
+  if (isError) {
+    logOut();
+    return <Navigate to="/" />;
+  }
+
   return (
     <UserContext.Provider
       value={{

@@ -9,6 +9,7 @@ interface LoginRegistroBaseProps {
   onCrearCuenta?: () => void;
   onIniciarSesion?: () => void;
   isLogin?: boolean;
+  isLoading?: boolean;
 }
 
 export const LoginRegistroBase = ({
@@ -17,6 +18,7 @@ export const LoginRegistroBase = ({
   onIniciarSesion,
   isLogin,
   children,
+  isLoading,
 }: LoginRegistroBaseProps & PropsWithChildren) => (
   <div className="login h-full">
     <div className="seccion__left">
@@ -54,6 +56,7 @@ export const LoginRegistroBase = ({
           size="lg"
           onClick={onCrearCuenta}
           type={isLogin ? "button" : "submit"}
+          isLoading={isLoading}
         >
           Crear Cuenta
         </Button>

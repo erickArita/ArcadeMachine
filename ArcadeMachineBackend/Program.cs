@@ -1,10 +1,13 @@
 using System.Text;
 using ArcadeMachine.Api;
 using ArcadeMachine.Core.Autentication.Services;
+using ArcadeMachine.Core.Autentication.Utilities;
 using ArcadeMachine.Core.Partida;
 using ArcadeMachine.Core.Partida.Repositorios.PartidaRepositorio;
+using ArcadeMachine.Core.Partida.Services;
 using ArcadeMachine.Core.Partida.Services.PartidaService;
 using ArcadeMachine.Infraestructure.Persistence;
+using ArcadeMachine.Infraestructure.Seeds;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -45,6 +48,7 @@ builder.Services.AddDbContext<AplicationDbContext>(opt =>
 
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt => opt.SignIn.RequireConfirmedAccount = false)
+    .AddErrorDescriber<ErrorMessages>()
     .AddEntityFrameworkStores<AplicationDbContext>()
     .AddDefaultTokenProviders();
 
@@ -126,9 +130,11 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    MiniJuegoSeeder.SeedData(app.Services);
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 
 app.UseCors(MyAllowSpecificOrigins);
 app.UseHttpsRedirection();

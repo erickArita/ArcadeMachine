@@ -1,6 +1,6 @@
 ﻿using Microsoft.Build.Framework;
 
-namespace ArcadeMachine.Core.Autentication;
+namespace ArcadeMachine.Core.Autentication.Models;
 
 public class LoginUser
 {
