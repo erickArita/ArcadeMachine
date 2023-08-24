@@ -13,6 +13,7 @@ const rankingCols: Column[] = [
 
 interface RankingTableProps<T> {
   data?: T[];
+  loading?: boolean;
 }
 
 export interface RankingData {
@@ -20,8 +21,8 @@ export interface RankingData {
   nombre: string;
 }
 
-export const Ranking = ({ data }: RankingTableProps<RankingData>) => {
-  return <CustomTable columns={rankingCols} rows={data} />;
+export const Ranking = ({ data, loading }: RankingTableProps<RankingData>) => {
+  return <CustomTable columns={rankingCols} rows={data} isLoading={loading} />;
 };
 
 const historialCols: Column[] = [
@@ -36,10 +37,16 @@ const historialCols: Column[] = [
 ];
 
 export interface HistorialData {
-  resultado: string;
-  contrincante: string;
+  id?: string;
+  resultado?: boolean;
+  contrincante?: string;
 }
 
-export const Historial = ({ data }: RankingTableProps<HistorialData>) => {
-  return <CustomTable columns={historialCols} rows={data} />;
+export const Historial = ({
+  data,
+  loading,
+}: RankingTableProps<HistorialData>) => {
+  return (
+    <CustomTable columns={historialCols} rows={data} isLoading={loading} />
+  );
 };

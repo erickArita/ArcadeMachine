@@ -42,6 +42,7 @@ export const LoginRegistroBase = ({
                       shadow-lg"
             onClick={onIniciarSesion}
             type="submit"
+            isLoading={isLogin && isLoading}
           >
             Iniciar sesión
           </Button>
@@ -56,7 +57,7 @@ export const LoginRegistroBase = ({
           size="lg"
           onClick={onCrearCuenta}
           type={isLogin ? "button" : "submit"}
-          isLoading={isLoading}
+          isLoading={isLoading && !isLogin}
         >
           Crear Cuenta
         </Button>

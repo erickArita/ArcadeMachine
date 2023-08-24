@@ -19,6 +19,8 @@ interface GameLobbyProps {
   rankingData?: RankingData[];
   isLoading?: boolean;
   onCancelarBusqueda?: () => void;
+  loadingHistorial?: boolean;
+  loadingRanking?: boolean;
 }
 
 export const GameLobby = ({
@@ -30,6 +32,8 @@ export const GameLobby = ({
   rankingData,
   isLoading,
   onCancelarBusqueda,
+  loadingHistorial,
+  loadingRanking,
 }: GameLobbyProps) => {
   const [busqueda, setBusqueda] = useState(false);
 
@@ -51,7 +55,7 @@ export const GameLobby = ({
         </h3>
         <div className="flex justify-around">
           <div className="w-1/6">
-            <Historial data={historialData} />
+            <Historial data={historialData} loading={loadingHistorial} />
           </div>
           <div>
             <Card
@@ -62,7 +66,7 @@ export const GameLobby = ({
             />
           </div>
           <div className="w-1/6">
-            <Ranking data={rankingData} />
+            <Ranking data={rankingData} loading={loadingRanking} />
           </div>
         </div>
         <div className="self-center">

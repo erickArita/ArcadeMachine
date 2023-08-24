@@ -21,11 +21,15 @@ export interface Row {
 interface RankingTableProps {
   columns: Column[];
   rows?: Row[];
+  isLoading?: boolean;
 }
 
-export const CustomTable = ({ columns, rows = [] }: RankingTableProps) => {
+export const CustomTable = ({
+  columns,
+  rows = [],
+  isLoading,
+}: RankingTableProps) => {
   return (
-
     <Table
       className="light"
       bgcolor="white"
@@ -36,7 +40,7 @@ export const CustomTable = ({ columns, rows = [] }: RankingTableProps) => {
           <TableColumn key={column.key}>{column.label}</TableColumn>
         ))}
       </TableHeader>
-      <TableBody>
+      <TableBody isLoading={isLoading}>
         {rows.map((row) => (
           <TableRow key={row?.key}>
             {(columnKey) => (

@@ -9,6 +9,10 @@ import {
   useLazyEmparejarQuery,
   useObtenerJuegoPorIdQuery,
 } from "./api/Partidas/partidas";
+import {
+  useRankingPorJuegoQuery,
+  useWankingPorUsuarioQuery,
+} from "./api/rankings/rankings";
 
 export const GameLobbyFeature = () => {
   const { tipoJuego } = useParams<{ tipoJuego: string }>();
@@ -56,6 +60,23 @@ export const GameLobbyFeature = () => {
     setBuscandoPartida(false);
   };
 
+  const { data: RankingPorJuego, isLoading: isLoadingRankingPorJuego } =
+    useRankingPorJuegoQuery(
+      { juegoId: tipoJuego },
+      {
+        skip: !tipoJuego,
+      }
+    );
+
+  const { data: WankingPorUsuario, isLoading: isLoadingWankingPorUsuario } =
+    useWankingPorUsuarioQuery(
+      { juegoId: user?.userId, jugadorId: user?.userId },
+      {
+        skip: !user?.userId || !tipoJuego,
+      }
+    );
+  console.log(RankingPorJuego);
+
   return (
     <GameLobby
       buscandoPartida={buscandoPartida}
@@ -67,10 +88,19 @@ export const GameLobbyFeature = () => {
       }}
       title={juego?.nombre || ""}
       onBuscarPartida={onEmparejar}
-      historialData={[]}
+      historialData={WankingPorUsuario?.map((p) => ({
+        contrincante: p.contrincante,
+        resultado: p.gano,
+        id: p.id,
+      }))}
       onCancelarBusqueda={onCancelarBusqueda}
       isLoading={isLoading}
-      rankingData={[]}
+      loadingHistorial={isLoadingWankingPorUsuario}
+      loadingRanking={isLoadingRankingPorJuego}
+      rankingData={RankingPorJuego?.map((p) => ({
+        nombre: p.nombre,
+        posicion: p.top,
+      }))}
     />
   );
 };

@@ -45,7 +45,7 @@ public class PartidasRepositorio : IPartidaRepositorio
             .Select(p => new UserHistory
             (
                 p.Id,
-                p.usuario1Id == jugadorId ? p.usuario2.UserName : p.usuario1.UserName,
+                p.usuario1Id == jugadorId ? p.usuario2.UserName ?? "" : p.usuario1.UserName ?? "",
                 jugadorId == p.usuario1Id
                     ? p.puntajeUsuario1 > p.puntajeUsuario2
                     : p.puntajeUsuario2 > p.puntajeUsuario1
@@ -55,17 +55,12 @@ public class PartidasRepositorio : IPartidaRepositorio
         return ultimasPartidas;
     }
 
+    record Users(string Id, string Id2);
+
     // traer los mejores 10 jugadores por juego
     public async Task<List<MundialTop>> ObtenerMejoresJugadoresPorJuego(Guid juegoId)
     {
-        var userIds = await _appContext.Partidas
-            .Where(p => p.juegoId == juegoId)
-            .SelectMany(p => new[] { p.usuario1Id, p.usuario2Id })
-            .Distinct()
-            .ToListAsync();
-
         var usuarios = await _appContext.Users
-            .Where(u => userIds.Contains(u.Id))
             .ToListAsync();
 
         var ranking = await _appContext.Partidas
