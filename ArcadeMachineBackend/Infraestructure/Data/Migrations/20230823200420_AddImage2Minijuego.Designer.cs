@@ -4,16 +4,19 @@ using ArcadeMachine.Infraestructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ArcadeMachine.Data.Migrations.IdentityServer.Configuration
+namespace ArcadeMachine.Infraestructure.Data.Migrations
 {
     [DbContext(typeof(AplicationDbContext))]
-    partial class AplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230823200420_AddImage2Minijuego")]
+    partial class AddImage2Minijuego
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,10 +32,6 @@ namespace ArcadeMachine.Data.Migrations.IdentityServer.Configuration
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("id");
 
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Img")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -41,10 +40,6 @@ namespace ArcadeMachine.Data.Migrations.IdentityServer.Configuration
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("nombre");
-
-                    b.Property<string>("ShadowColor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

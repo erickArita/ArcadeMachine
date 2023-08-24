@@ -8,10 +8,10 @@ public class PartidasService : IPartidaService
 {
     private List<PartidaTemporal> Partidas = new();
 
-    public PartidaTemporal Emparejar(Guid jugadorId, string username)
+    public PartidaTemporal Emparejar(Guid jugadorId, string username, Guid juegoId)
     {
         // tupla de partidas y hay pertidas disponibles
-        var (partida, hayPartidasDisponibles) = HayPartidasDisponibles();
+        var (partida, hayPartidasDisponibles) = HayPartidasDisponibles(juegoId);
 
         if (hayPartidasDisponibles)
         {
@@ -20,20 +20,21 @@ public class PartidasService : IPartidaService
         }
         else
         {
-            partida = CrearPartida(jugadorId, username);
+            partida = CrearPartida(jugadorId, username, juegoId);
             return partida;
         }
     }
 
-    private (PartidaTemporal, bool) HayPartidasDisponibles()
+    private (PartidaTemporal?, bool) HayPartidasDisponibles(Guid juegoId)
     {
-        var partida = Partidas.FirstOrDefault(p => !p.Emparejada());
+        var partida = Partidas.Where(p => p.MinijuegoId == juegoId).FirstOrDefault(p => !p.Emparejada());
         return (partida, partida != null);
     }
 
-    private PartidaTemporal CrearPartida(Guid jugadorId, string username)
+    private PartidaTemporal CrearPartida(Guid jugadorId, string username, Guid juegoId)
     {
         var partida = new PartidaTemporal();
+        partida.MinijuegoId = juegoId;
         partida.AgregarJugador(jugadorId, username, TipoJugadorEnum.Anfitrion);
         Partidas.Add(partida);
         return partida;

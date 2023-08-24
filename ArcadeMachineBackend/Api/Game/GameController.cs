@@ -1,12 +1,12 @@
 using ArcadeMachine.Api.Game.Queries;
 using ArcadeMachine.Api.Game.Requests;
-using ArcadeMachine.Core.Partida;
 using ArcadeMachine.Core.Partida.Enums;
 using ArcadeMachine.Core.Partida.Models;
 using ArcadeMachine.Core.Partida.Repositorios.PartidaRepositorio;
 using ArcadeMachine.Core.Partida.Services;
 using ArcadeMachine.Core.Partida.Services.PartidaService;
 using ArcadeMachine.Core.Partida.Services.PartidaService.Modelos;
+using ArcadeMachine.Domain.Entities;
 using ArcadeMachine.Infraestructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -41,7 +41,7 @@ public class GameController : ControllerBase
 
 
     [HttpGet]
-    public async Task<OkResult> Emparejar([FromQuery] Guid userId)
+    public async Task<OkResult> Emparejar([FromQuery] Guid userId, [FromQuery] Guid juegoId)
     {
         var username = User.Identity.Name;
         if (username is null)
@@ -49,7 +49,7 @@ public class GameController : ControllerBase
             throw new Exception("No se pudo obtener el usuario");
         }
 
-        var partida = _partidaService.Emparejar(userId, username);
+        var partida = _partidaService.Emparejar(userId, username, juegoId);
         if (partida.Emparejada())
         {
             var user1 = partida.userName1;
@@ -96,11 +96,25 @@ public class GameController : ControllerBase
         var score = _partidaService.ObtenerScore(partida);
         return score;
     }
-    
+
     [HttpGet]
     public async Task<PartidaTemporal> ObtenerPartida([FromQuery] Guid partidaId)
     {
         var partida = _partidaService.ObtenerPartida(partidaId);
         return partida;
+    }
+
+    [HttpGet]
+    public async Task<List<MiniJuego>> ObtenerMiniJuegos()
+    {
+        var miniJuegos = await _partidaRepositorio.ObtenerMiniJuegos();
+        return miniJuegos;
+    }
+
+    [HttpGet]
+    public async Task<MiniJuego> ObtenerMiniJuego([FromQuery] Guid juegoId)
+    {
+        var miniJuego = await _partidaRepositorio.ObtenerMiniJuego(juegoId);
+        return miniJuego;
     }
 }
