@@ -9,9 +9,15 @@ export const Loader = ({
   return (
     <>
       <RenderIf condition={!!isLoading}>
-        <CircularProgress color="primary" />
+        <LoaderContaoner>
+          <CircularProgress className="absolute" color="primary" />
+        </LoaderContaoner>
       </RenderIf>
       <RenderIf condition={!isLoading}>{children}</RenderIf>
     </>
   );
 };
+
+export const LoaderContaoner = ({ children }: PropsWithChildren) => (
+  <div className="relative flex justify-center items-center">{children}</div>
+);

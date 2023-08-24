@@ -38,21 +38,22 @@ public class PartidasRepositorio : IPartidaRepositorio
 
     public async Task<List<UserHistory>> ObtenerUltimasPartidas(Guid juegoId, string jugadorId)
     {
-        var ultimasPartidas = await _appContext.Partidas
-            .Where(p => p.juegoId == juegoId && (p.usuario1Id == jugadorId || p.usuario2Id == jugadorId))
+        var jugadasConResultado = await _appContext.Partidas
+            .Include(p => p.usuario1)
+            .Include(p => p.usuario2)
+            .Where(p => p.usuario1Id == jugadorId || p.usuario2Id == jugadorId)
             .OrderByDescending(p => p.fechaPartida)
             .Take(10)
-            .Select(p => new UserHistory
-            (
+            .Select(p => new UserHistory(
                 p.Id,
-                p.usuario1Id == jugadorId ? p.usuario2.UserName ?? "" : p.usuario1.UserName ?? "",
-                jugadorId == p.usuario1Id
-                    ? p.puntajeUsuario1 > p.puntajeUsuario2
-                    : p.puntajeUsuario2 > p.puntajeUsuario1
+                p.usuario1Id == jugadorId ? p.usuario2.UserName : p.usuario1.UserName,
+                (p.usuario1Id == jugadorId && p.puntajeUsuario1 > p.puntajeUsuario2) ||
+                (p.usuario2Id == jugadorId && p.puntajeUsuario2 > p.puntajeUsuario1) ? "Ganaste" :
+                (p.puntajeUsuario1 == p.puntajeUsuario2) ? "Empate" : "Perdiste"
             ))
             .ToListAsync();
 
-        return ultimasPartidas;
+        return jugadasConResultado;
     }
 
     record Users(string Id, string Id2);

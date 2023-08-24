@@ -46,7 +46,9 @@ export const Historial = ({
   data,
   loading,
 }: RankingTableProps<HistorialData>) => {
+  console.log(data);
+
   return (
-    <CustomTable columns={historialCols} rows={data} isLoading={loading} />
+    <CustomTable  columns={historialCols} rows={data} isLoading={loading} />
   );
 };

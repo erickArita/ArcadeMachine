@@ -3,5 +3,5 @@
 public record UserHistory(
     Guid Id,
     string Contrincante,
-    bool Gano
-    );
+    string Gano
+);

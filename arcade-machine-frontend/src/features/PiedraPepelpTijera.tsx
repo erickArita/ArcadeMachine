@@ -17,6 +17,7 @@ import { PiedraPapelTijeraEnum } from "./api/enums/PiedraPepelTijeraEnum";
 import { ResultadoPartidaEnum } from "./api/enums/ResultadoPartidaEunm";
 import { SyncronizationEnum } from "./api/enums/SyncronizationEnum";
 import { TipoJugadorEnum } from "./api/enums/TipoUsuarioEnum";
+import { WinOrLose } from "../libraries/games/components/WinOrLose/WinOrLose";
 
 const validarGanador = (
   jugada1: PiedraPapelTijeraEnum,
@@ -86,6 +87,7 @@ export const PiedraPepelpTijera = () => {
 
   const [score, setsCore] = useState<Score>({});
   const [numJudadas, setNumJudadas] = useState(0);
+  const [imWinnerw, setImWinner] = useState(false);
 
   const { reset, start } = useTimer({
     initialTime: 8,
@@ -106,7 +108,7 @@ export const PiedraPepelpTijera = () => {
         setTimeout(() => {
           reset();
           start();
-        }, 5000);
+        }, 3000);
       }
     },
     onTimeUpdate(time) {
@@ -122,6 +124,12 @@ export const PiedraPepelpTijera = () => {
       }
     },
   });
+
+  const anfitrionScore = score[user?.username as string]?.score || 0;
+
+  const invitadoScore = Object.entries(score).find(
+    (s) => !s.includes(user?.username as string)
+  );
 
   const handleValidarGanador = useCallback(
     async (jugadaOponente: PiedraPapelTijeraEnum) => {
@@ -166,7 +174,7 @@ export const PiedraPepelpTijera = () => {
     (resultadoJudagoe1) => {
       setsCore(resultadoJudagoe1);
     },
-    []
+    [invitadoScore]
   );
 
   useEffect(() => {
@@ -174,10 +182,15 @@ export const PiedraPepelpTijera = () => {
   }, []);
   const navigate = useNavigate();
 
+  const onFinalizar = async () => {
+    navigate(-1);
+  };
+
+  const [openResults, setopenResults] = useState(false);
   useSignalREffect(
     "TerminarPartida",
     () => {
-      navigate(-1);
+      setopenResults(true);
     },
     []
   );
@@ -193,27 +206,28 @@ export const PiedraPepelpTijera = () => {
     [handleValidarGanador]
   );
 
-  const anfitrionScore = score[user?.username as string]?.score || 0;
-
-  const invitadoScore = Object.entries(score).find(
-    (s) => !s.includes(user?.username as string)
-  );
-
   return (
-    <GameLayout
-      maxValue={10}
-      player1={{
-        name: user?.username,
-        score: anfitrionScore,
-      }}
-      player2={{
-        name: invitadoScore?.[0],
-        score: invitadoScore?.[1].score || 0,
-      }}
-      leftSide={<Ppt isPlayer1 onJugada={setJugada} jugada={jugada} />}
-      rightSide={<Ppt jugada={jugadaOponente} />}
-      timer={timer}
-      numeroPArtida={numJudadas}
-    />
+    <>
+      <GameLayout
+        maxValue={10}
+        player1={{
+          name: user?.username,
+          score: anfitrionScore,
+        }}
+        player2={{
+          name: invitadoScore?.[0],
+          score: invitadoScore?.[1].score || 0,
+        }}
+        leftSide={<Ppt isPlayer1 onJugada={setJugada} jugada={jugada} />}
+        rightSide={<Ppt jugada={jugadaOponente} />}
+        timer={timer}
+        numeroPArtida={numJudadas}
+      />
+      <WinOrLose
+        isOpen={openResults}
+        oncClick={onFinalizar}
+        win={anfitrionScore > (invitadoScore?.[1]?.score || 0)}
+      />
+    </>
   );
 };

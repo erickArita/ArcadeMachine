@@ -1,5 +1,5 @@
 import { FC, PropsWithChildren, useCallback, useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
+import { CustomError } from "../../../services/authFunctions";
 import { AuthContext } from "../contexts/authContext";
 import {
   decodeToken,
@@ -8,12 +8,11 @@ import {
   setToken,
 } from "../helpers/Token.helper";
 import { workerTask } from "../helpers/validationWorker";
+import { useInterval } from "../hooks/useInterval";
 import { ILoginResponse, useLoginMutation } from "../hooks/useLoginMutation";
 import { useTaskScheduler } from "../hooks/useTaskSheduler";
 import { ILoginFormRequest } from "../types/LogInRequest.type";
-import { useInterval } from "../hooks/useInterval";
 import { IRegisterFormRequest } from "../types/RegisterRequest";
-import { CustomError } from "../../../services/authFunctions";
 
 interface IAuthenticationProvider {
   customLoginFn: (data: {
@@ -124,8 +123,6 @@ export const AuthenticationProvider: FC<
       });
       if (access_token) handleLogin(access_token);
       setLoading(false);
-    } catch (error) {
-      toast.error(String(error));
     } finally {
       setLoading(false);
     }

@@ -31,9 +31,15 @@ export const CustomTable = ({
 }: RankingTableProps) => {
   return (
     <Table
-      className="light"
+      className="light h-[400px]"
       bgcolor="white"
       aria-label="Example table with dynamic content"
+      isHeaderSticky
+      classNames={{
+        base: "scrollbar-hide",
+        table: "max-h-[400px]",
+      }}
+      
     >
       <TableHeader>
         {columns.map((column) => (
@@ -44,7 +50,9 @@ export const CustomTable = ({
         {rows.map((row) => (
           <TableRow key={row?.key}>
             {(columnKey) => (
-              <TableCell>{getKeyValue(row, columnKey)}</TableCell>
+              <TableCell className="text-gray-400 ">
+                {getKeyValue(row, columnKey)}
+              </TableCell>
             )}
           </TableRow>
         ))}

@@ -9,10 +9,14 @@ import { AuthenticationProvider } from "./libraries/auth/index.ts";
 import { login, register } from "./services/authFunctions.ts";
 import { Provider } from "react-redux";
 import store from "./store/store.ts";
+import { Toaster } from "react-hot-toast";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <NextUIProvider>
+      <div>
+        <Toaster />
+      </div>
       <Provider store={store}>
         <AuthenticationProvider
           customLoginFn={login}

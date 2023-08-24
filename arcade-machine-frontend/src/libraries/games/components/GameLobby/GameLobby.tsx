@@ -48,8 +48,8 @@ export const GameLobby = ({
   };
 
   return (
-    <Loader isLoading={isLoading}>
-      <section className="flex flex-col gap-10 bg-white">
+    <section className="flex flex-col gap-10 bg-white">
+      <Loader isLoading={isLoading}>
         <h3 className="text-center text-black font-semibold text-2xl">
           {title}
         </h3>
@@ -96,7 +96,7 @@ export const GameLobby = ({
             {busqueda ? "Cancelar" : "Buscar partida"}
           </Button>
         </div>
-      </section>
-    </Loader>
+      </Loader>
+    </section>
   );
 };

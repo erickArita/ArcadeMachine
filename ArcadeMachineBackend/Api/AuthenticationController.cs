@@ -94,7 +94,7 @@ public class AuthenticationController : ControllerBase
         }
         else
         {
-            return AplicationResponses.Error("Error al iniciar sesión");
+            return AplicationResponses.Error("Usuario o contraseña Incorrectos");
         }
     }
 

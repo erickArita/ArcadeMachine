@@ -24,13 +24,13 @@ const filterErrors = (errors: CustomError[]) => {
 
   errors.forEach((error) => {
     if (error.code.includes("Password")) {
-      errorByField.password.push(error.description);
+      errorByField.password.push(error.description as string);
     }
     if (error.code.includes("Email")) {
-      errorByField.email.push(error.description);
+      errorByField.email.push(error.description as string);
     }
     if (error.code.includes("UserName")) {
-      errorByField.userName.push(error.description);
+      errorByField.userName.push(error.description as string);
     }
   });
 
@@ -47,10 +47,11 @@ export const Registro = () => {
     onRegister(e);
   };
 
+  const { email, password, userName } = filterErrors(errors);
+
   if (isAuthenticated) {
     return <Navigate to="/" state={{ fromLogin: true }} />;
   }
-  console.log(errors);
 
   return (
     <Section>
@@ -64,7 +65,7 @@ export const Registro = () => {
             size="lg"
             radius="sm"
             {...register("userName")}
-            errorMessage={formState.errors.userName?.message}
+            errorMessage={formState.errors.userName?.message || userName[0]}
           />
           <Input
             labelPlacement="outside"
@@ -74,7 +75,7 @@ export const Registro = () => {
             size="lg"
             radius="sm"
             {...register("email")}
-            errorMessage={formState.errors.email?.message}
+            errorMessage={formState.errors.email?.message || email[0]}
           />
           <Input
             labelPlacement="outside"
@@ -84,7 +85,7 @@ export const Registro = () => {
             size="lg"
             radius="sm"
             {...register("password")}
-            errorMessage={formState.errors.password?.message}
+            errorMessage={formState.errors.password?.message || password[0]}
           />
         </LoginRegistroBase>
       </form>

@@ -16,14 +16,14 @@ export const CardContainer = ({
   isLoading,
 }: CardContainerProps) => {
   return (
-    <section className="grid flex-1 justify-center h-full auto-rows-auto">
-      <div>
-        <h1 className="  font-bold text-3xl text-center	 text-black ">
-          {titulo}
-        </h1>
-      </div>
-      <div className="pb-20 grid grid-cols-3  max-w-7xl   gap-32  row-span-4  ">
-        <Loader isLoading={!!isLoading}>
+    <Loader isLoading={!!isLoading}>
+      <section className="grid flex-1 justify-center h-full auto-rows-auto">
+        <div>
+          <h1 className="  font-bold text-3xl text-center	 text-black ">
+            {titulo}
+          </h1>
+        </div>
+        <div className="pb-20 grid grid-cols-3  max-w-7xl   gap-32  row-span-4  ">
           {miniJuegos?.map((minijuego, i) => (
             <div className={`grid  ${!(i % 2) ? "items-end" : "items-start"}`}>
               <Card
@@ -35,8 +35,8 @@ export const CardContainer = ({
               />
             </div>
           ))}
-        </Loader>
-      </div>
-    </section>
+        </div>
+      </section>
+    </Loader>
   );
 };

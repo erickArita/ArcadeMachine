@@ -4,7 +4,7 @@ const rankingApitags = baseApi.enhanceEndpoints({
   addTagTypes: ["Rankigns"],
 });
 
-const controllerName = "api/ranking";
+const controllerName = "api/Ranking";
 
 interface RankingPorJuegoResponse {
   id: string;
@@ -33,10 +33,10 @@ const rankingApi = rankingApitags.injectEndpoints({
       {
         jugadorId?: string;
         juegoId?: string;
-      }
+        }
     >({
       query: ({ jugadorId, juegoId }) => ({
-        url: `${controllerName}/obtenerRankingPorJugador?jugadorId=${jugadorId}&juegoId=${juegoId}`,
+        url: `${controllerName}/ObtenerRankingPorJugador?jugadorId=${jugadorId}&juegoId=${juegoId}`,
       }),
     }),
   }),

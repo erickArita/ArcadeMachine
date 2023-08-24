@@ -32,9 +32,6 @@ export const GameLobbyFeature = () => {
   const [emparejarQuery] = useLazyEmparejarQuery();
 
   const { setWaveColor } = useWaves();
-  useEffect(() => {
-    setWaveColor(WaveColorEnum.PURPLE);
-  }, []);
 
   const [buscandoPartida, setBuscandoPartida] = useState(false);
 
@@ -70,37 +67,42 @@ export const GameLobbyFeature = () => {
 
   const { data: WankingPorUsuario, isLoading: isLoadingWankingPorUsuario } =
     useWankingPorUsuarioQuery(
-      { juegoId: user?.userId, jugadorId: user?.userId },
+      { juegoId: tipoJuego, jugadorId: user?.userId },
       {
         skip: !user?.userId || !tipoJuego,
       }
     );
-  console.log(RankingPorJuego);
+
+  useEffect(() => {
+    setWaveColor(WaveColorEnum.PURPLE);
+  }, []);
 
   return (
-    <GameLobby
-      buscandoPartida={buscandoPartida}
-      card={{
-        color: juego?.color,
-        img: juego?.img,
-        shadowColor: juego?.shadowColor,
-        title: juego?.nombre,
-      }}
-      title={juego?.nombre || ""}
-      onBuscarPartida={onEmparejar}
-      historialData={WankingPorUsuario?.map((p) => ({
-        contrincante: p.contrincante,
-        resultado: p.gano,
-        id: p.id,
-      }))}
-      onCancelarBusqueda={onCancelarBusqueda}
-      isLoading={isLoading}
-      loadingHistorial={isLoadingWankingPorUsuario}
-      loadingRanking={isLoadingRankingPorJuego}
-      rankingData={RankingPorJuego?.map((p) => ({
-        nombre: p.nombre,
-        posicion: p.top,
-      }))}
-    />
+    <>
+      <GameLobby
+        buscandoPartida={buscandoPartida}
+        card={{
+          color: juego?.color,
+          img: juego?.img,
+          shadowColor: juego?.shadowColor,
+          title: juego?.nombre,
+        }}
+        title={juego?.nombre || ""}
+        onBuscarPartida={onEmparejar}
+        historialData={WankingPorUsuario?.map((p) => ({
+          contrincante: p.contrincante,
+          resultado: p.gano,
+          id: p.id,
+        }))}
+        onCancelarBusqueda={onCancelarBusqueda}
+        isLoading={isLoading}
+        loadingHistorial={isLoadingWankingPorUsuario}
+        loadingRanking={isLoadingRankingPorJuego}
+        rankingData={RankingPorJuego?.map((p) => ({
+          nombre: p.nombre,
+          posicion: p.top,
+        }))}
+      />
+    </>
   );
 };

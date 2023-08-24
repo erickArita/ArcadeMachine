@@ -30,6 +30,9 @@ export const login = async ({
     }),
   });
   const data = (await response.json()) as BackendResponse<Auth>;
+  if (data?.value?.status === "Error") {
+    toast.error(data.value.message);
+  }
 
   return {
     access_token: data.data.token,
