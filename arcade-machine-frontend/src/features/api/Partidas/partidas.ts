@@ -55,7 +55,7 @@ const gamesApi = gamesApiWithTags.injectEndpoints({
     }),
     obtenerJuegoPorId: builder.query<Minijuego, { juegoId?: string }>({
       query: ({ juegoId }) => ({
-        url: `${controllerName}/ObtenerMiniJuegoPorId?juegoId=${juegoId}`,
+        url: `${controllerName}/ObtenerMiniJuego?juegoId=${juegoId}`,
       }),
     }),
   }),

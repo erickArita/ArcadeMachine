@@ -33,6 +33,8 @@ const filterErrors = (errors: CustomError[]) => {
       errorByField.userName.push(error.description);
     }
   });
+
+  return errorByField;
 };
 
 export const Registro = () => {

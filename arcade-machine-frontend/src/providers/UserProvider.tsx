@@ -3,6 +3,8 @@ import { Navigate } from "react-router-dom";
 import { useGetUserDataQuery } from "../features/api/autentication/autorizacion";
 import { useAuth } from "../libraries/auth";
 import { AuthenticationResponse } from "../features/api/autentication/models/AutenticationResponse";
+import { RenderIf } from "../components/RenderIf";
+import { Loader } from "../components/Loader";
 
 interface UserProviderProps {
   user: AuthenticationResponse | undefined;
@@ -20,11 +22,13 @@ export const useUser = () => {
 };
 
 export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { logOut } = useAuth();
-  const { data, isFetching, isError } = useGetUserDataQuery();
+  const { logOut, isLoading } = useAuth();
+  const { data, isFetching, isError } = useGetUserDataQuery(undefined, {
+    skip: isLoading,
+  });
   console.log(isError);
 
-  if (isError) {
+  if (isError && !isLoading) {
     logOut();
     return <Navigate to="/" />;
   }
@@ -36,7 +40,7 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         isLoading: isFetching,
       }}
     >
-      {children}
+      <Loader isLoading={isLoading}>{children}</Loader>
     </UserContext.Provider>
   );
 };
