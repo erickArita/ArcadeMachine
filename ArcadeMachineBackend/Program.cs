@@ -19,7 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 // Add services to the container.
 
-builder.Services.AddTransient<IPartidaRepositorio, PartidasRepositorio>();
+builder.Services.AddScoped<IPartidaRepositorio, PartidasRepositorio>();
 builder.Services.AddSingleton<IPartidaService, PartidasService>();
 
 var audience = builder.Configuration["JWT:ValidAudience"];
@@ -38,7 +38,8 @@ builder.Services.AddCors(options =>
             policy.WithOrigins(audience)
                 .AllowAnyHeader()
                 .AllowAnyMethod()
-                .AllowAnyOrigin();
+                .AllowAnyOrigin()
+                ;
         });
 });
 
@@ -146,5 +147,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapHub<GameHub>("/GameHub");
+
 
 app.Run();

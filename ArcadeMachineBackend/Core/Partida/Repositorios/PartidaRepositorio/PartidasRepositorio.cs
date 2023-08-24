@@ -20,13 +20,15 @@ public class PartidasRepositorio : IPartidaRepositorio
     {
         var partida = new Domain.Entities.Partida()
         {
+            Id = Guid.NewGuid(),
             juegoId = partidaTemporal.MinijuegoId,
             usuario1Id = partidaTemporal.JugadorId1.ToString(),
             usuario2Id = partidaTemporal.JugadorId2.ToString(),
             puntajeUsuario1 = partidaTemporal.ResultadoJugador1,
-            puntajeUsuario2 = partidaTemporal.ResultadoJugador2
+            puntajeUsuario2 = partidaTemporal.ResultadoJugador2,
+            fechaPartida = new DateTime(),
         };
-        _appContext.Partidas.Add(partida);
+        await _appContext.Partidas.AddAsync(partida);
         await _appContext.SaveChangesAsync();
         return partida;
     }

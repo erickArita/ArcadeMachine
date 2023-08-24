@@ -10,7 +10,6 @@ public class PartidasService : IPartidaService
 
     public PartidaTemporal Emparejar(Guid jugadorId, string username, Guid juegoId)
     {
-        // tupla de partidas y hay pertidas disponibles
         var (partida, hayPartidasDisponibles) = HayPartidasDisponibles(juegoId);
 
         if (hayPartidasDisponibles)
@@ -40,64 +39,69 @@ public class PartidasService : IPartidaService
         return partida;
     }
 
-    // clase para eliminar la partida temporal
-    public PartidaTemporal TerminarPartida(Guid partidaId, Guid usuarioId)
+    public PartidaTemporal? TerminarPartida(Guid partidaId, Guid usuarioId)
     {
         var partida = Partidas.First(p => p.PartidaId == partidaId);
 
-        partida.EliminarJugador(usuarioId);
-
-        if (!partida.Emparejada())
+        if (!partida.Terminada)
+        {
+            partida.Terminada = true;
+        }
+        else
         {
             Partidas.Remove(partida);
+            return partida;
         }
 
-        return partida;
+        return null;
     }
 
-    public PartidaTemporal ActualizarPartida(Guid partidaId, Guid jugadorId, ResultadoPartidaEnum gano)
+    public (PartidaTemporal, string?) SumarGanador(
+        Guid partidaId,
+        Guid jugadorId,
+        ResultadoPartidaEnum gano
+    )
     {
+        TipoJugadorEnum ganador = TipoJugadorEnum.Anfitrion;
         var partida = ObtenerPartida(partidaId);
 
-        if (partida.ObtenerTipoJugar(jugadorId) == TipoJugadorEnum.Anfitrion && gano == ResultadoPartidaEnum.Victoria)
+
+        if (gano == ResultadoPartidaEnum.Victoria)
         {
-            partida.ResultadoJugador1++;
-        }
-        else
-        {
-            partida.ResultadoJugador2++;
+            ganador = partida.SetGanador(jugadorId);
         }
 
-        return partida;
+
+        if (gano == ResultadoPartidaEnum.Derrota)
+        {
+            var contrincanteId = partida.ObtenerContrincanteId(jugadorId);
+            ganador = partida.SetGanador(contrincanteId);
+        }
+
+        var userNameWinner = ganador == TipoJugadorEnum.Invitado ? partida.userName2 : partida.userName1;
+        if (userNameWinner is null)
+        {
+            throw new Exception("No se encontro el usuario ganador");
+        }
+
+        return (partida, userNameWinner);
     }
 
-    public TipoJugadorEnum GanadorPartida(PartidaTemporal partida)
+    public string? GetUserName(Guid userId, Guid partidaId)
     {
-        if (partida.ResultadoJugador1 > partida.ResultadoJugador2)
+        var partida = ObtenerPartida(partidaId);
+        if (partida.JugadorId1 == userId)
         {
-            return TipoJugadorEnum.Anfitrion;
+            return partida.userName1;
         }
-        else
-        {
-            return TipoJugadorEnum.Invitado;
-        }
+
+        return partida.userName2;
     }
 
-    public Score ObtenerScore(PartidaTemporal partidaActualizada)
-    {
-        var score = new Score(
-            ScoreUsuario1: partidaActualizada.ResultadoJugador1,
-            ScoreUsuario2: partidaActualizada.ResultadoJugador2,
-            UsuarioGanador: GanadorPartida(partidaActualizada)
-        );
-
-        return score;
-    }
 
     public PartidaTemporal ObtenerPartida(Guid partidaId)
     {
-        var partida = Partidas.First(p => p.PartidaId == partidaId);
-        return partida;
+        return Partidas.First(p => p.PartidaId == partidaId);
     }
 
     private PartidaTemporal? UsuarioEnPartida(string userName)
@@ -106,15 +110,30 @@ public class PartidasService : IPartidaService
             p => p.userName1?.ToString() == userName || p.userName2?.ToString() == userName);
     }
 
-    public void ForzarTerminarPartida(string userName)
+    public PartidaTemporal? ForzarTerminarPartida(string userName)
     {
         var partida = UsuarioEnPartida(userName);
-        if (partida is null) return;
-        if (partida.Emparejada()) return;
-
-        if (partida is not null)
+        if (partida is null)
         {
-            Partidas.Remove(partida);
+            return null;
         }
+
+        if (partida.Emparejada())
+        {
+            var contrincante = partida.ObtenerContrincante(userName);
+            if (contrincante == partida.JugadorId1)
+            {
+                partida.ResultadoJugador1 = partida.ResultadoJugador2 + 1;
+            }
+            else
+            {
+                partida.ResultadoJugador2 = partida.ResultadoJugador1 + 1;
+            }
+
+            return partida;
+        }
+
+        Partidas.Remove(partida);
+        return null;
     }
 }

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "react-hot-toast";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTimer } from "use-timer";
 import { GameLayout } from "../libraries/games/components/GameLayout/GameLayout";
 import { WaveColorEnum } from "../libraries/games/enums/waveColor";
@@ -8,37 +9,56 @@ import { Ppt } from "../libraries/games/features/PPT/Ppt";
 import { invoke, useSignalREffect } from "../providers/SignalProvider";
 import { useUser } from "../providers/UserProvider";
 import { useWaves } from "../providers/WavesProvider";
+import {
+  useTerminarPartidaMutation,
+  useValidarGanadorMutation,
+} from "./api/Partidas/partidas";
 import { PiedraPapelTijeraEnum } from "./api/enums/PiedraPepelTijeraEnum";
 import { ResultadoPartidaEnum } from "./api/enums/ResultadoPartidaEunm";
 import { SyncronizationEnum } from "./api/enums/SyncronizationEnum";
 import { TipoJugadorEnum } from "./api/enums/TipoUsuarioEnum";
-import { useValidarGanadorMutation } from "./api/Partidas/partidas";
 
 const validarGanador = (
   jugada1: PiedraPapelTijeraEnum,
   jugada2: PiedraPapelTijeraEnum
 ): ResultadoPartidaEnum => {
-  const jugadas = {
-    [PiedraPapelTijeraEnum.Piedra]: {
-      [PiedraPapelTijeraEnum.Piedra]: ResultadoPartidaEnum.Empate,
-      [PiedraPapelTijeraEnum.Tijera]: ResultadoPartidaEnum.Victoria,
-      [PiedraPapelTijeraEnum.Papel]: ResultadoPartidaEnum.Derrota,
-    },
-    [PiedraPapelTijeraEnum.Papel]: {
-      [PiedraPapelTijeraEnum.Papel]: ResultadoPartidaEnum.Empate,
-      [PiedraPapelTijeraEnum.Piedra]: ResultadoPartidaEnum.Victoria,
-      [PiedraPapelTijeraEnum.Tijera]: ResultadoPartidaEnum.Derrota,
-    },
-    [PiedraPapelTijeraEnum.Tijera]: {
-      [PiedraPapelTijeraEnum.Tijera]: ResultadoPartidaEnum.Empate,
-      [PiedraPapelTijeraEnum.Papel]: ResultadoPartidaEnum.Victoria,
-      [PiedraPapelTijeraEnum.Piedra]: ResultadoPartidaEnum.Derrota,
-    },
-  };
+  const jugadas = [
+    [
+      ResultadoPartidaEnum.Empate,
+      ResultadoPartidaEnum.Derrota,
+      ResultadoPartidaEnum.Victoria,
+      ResultadoPartidaEnum.Derrota,
+    ],
+    [
+      ResultadoPartidaEnum.Victoria,
+      ResultadoPartidaEnum.Empate,
+      ResultadoPartidaEnum.Derrota,
+      ResultadoPartidaEnum.Derrota,
+    ],
+    [
+      ResultadoPartidaEnum.Derrota,
+      ResultadoPartidaEnum.Victoria,
+      ResultadoPartidaEnum.Empate,
+      ResultadoPartidaEnum.Derrota,
+    ],
+    [
+      ResultadoPartidaEnum.Derrota,
+      ResultadoPartidaEnum.Derrota,
+      ResultadoPartidaEnum.Derrota,
+      ResultadoPartidaEnum.Derrota,
+    ],
+  ];
+  const res = jugadas[jugada1 - 1][jugada2 - 1];
 
- // @ts-ignore
-  return jugadas[jugada1][jugada2];
+  return res;
 };
+
+interface Score {
+  [key: string]: {
+    score: number;
+    isWinner: boolean;
+  };
+}
 
 export const PiedraPepelpTijera = () => {
   const { setWaveColor } = useWaves();
@@ -48,21 +68,27 @@ export const PiedraPepelpTijera = () => {
   }>();
 
   const [validarResultados] = useValidarGanadorMutation();
+  const [terminarPartida] = useTerminarPartidaMutation();
   const tipoJugadorParced = Number(tipoJugador) as unknown as TipoJugadorEnum;
 
   const { user } = useUser();
 
   const [jugada, setJugada] = useState<PiedraPapelTijeraEnum>(
-    PiedraPapelTijeraEnum.Ninguno
+    PiedraPapelTijeraEnum.Papel
   );
   const [jugadaOponente, setJugadaOponente] = useState<PiedraPapelTijeraEnum>(
-    PiedraPapelTijeraEnum.Ninguno
+    PiedraPapelTijeraEnum.Papel
   );
+
+  const ref = useRef(1);
 
   const [timer, setTimer] = useState(10);
 
-  useTimer({
-    initialTime: 10,
+  const [score, setsCore] = useState<Score>({});
+  const [numJudadas, setNumJudadas] = useState(0);
+
+  const { reset, start } = useTimer({
+    initialTime: 8,
     autostart: true,
     timerType: "DECREMENTAL",
     endTime: 0,
@@ -74,6 +100,14 @@ export const PiedraPepelpTijera = () => {
         user?.userId as string,
         jugada
       );
+      if (ref.current < 3) {
+        setNumJudadas(numJudadas + 1);
+        ref.current = ref.current + 1;
+        setTimeout(() => {
+          reset();
+          start();
+        }, 5000);
+      }
     },
     onTimeUpdate(time) {
       if (tipoJugadorParced == TipoJugadorEnum.Anfitrion) {
@@ -89,45 +123,48 @@ export const PiedraPepelpTijera = () => {
     },
   });
 
-  const handleValidarGanador = async (
-    jugadaOponente: PiedraPapelTijeraEnum
-  ) => {
-    validarResultados({
-      jugadorId: user?.userId as string,
-      partidaId: partidaId as string,
-      resultado: validarGanador(jugada, jugadaOponente),
-    });
-  };
+  const handleValidarGanador = useCallback(
+    async (jugadaOponente: PiedraPapelTijeraEnum) => {
+      await validarResultados({
+        jugadorId: user?.userId as string,
+        partidaId: partidaId as string,
+        resultado: validarGanador(jugada, jugadaOponente),
+      }).unwrap();
+      if (ref.current == 3) {
+        console.log(user?.userId);
+
+        await terminarPartida({
+          partidaId: partidaId as string,
+          jugadorId: user?.userId as string,
+        }).unwrap();
+      }
+    },
+    [jugada, partidaId, terminarPartida, user?.userId]
+  );
 
   useSignalREffect(
     "SincronizarJugada",
     (type: SyncronizationEnum, message: number) => {
       if (type == SyncronizationEnum.Jugada) {
-        console.log(message);
         setJugadaOponente(message);
-        if (
-          (message as unknown as PiedraPapelTijeraEnum) ==
-          PiedraPapelTijeraEnum.Ninguno
-        )
-          return;
         if (tipoJugadorParced == TipoJugadorEnum.Anfitrion) {
           handleValidarGanador(message);
         }
       }
 
-      if (tipoJugadorParced == TipoJugadorEnum.Invitado) {
-        if (type == SyncronizationEnum.Timer) {
+      if (type == SyncronizationEnum.Timer) {
+        if (tipoJugadorParced == TipoJugadorEnum.Invitado) {
           setTimer(message);
         }
       }
     },
-    []
+    [handleValidarGanador, tipoJugadorParced]
   );
 
   useSignalREffect(
     "Score",
-    (resultadoJudagoe1: number, resultadoJugado2: number) => {
-      console.log(resultadoJudagoe1, resultadoJugado2);
+    (resultadoJudagoe1) => {
+      setsCore(resultadoJudagoe1);
     },
     []
   );
@@ -135,21 +172,48 @@ export const PiedraPepelpTijera = () => {
   useEffect(() => {
     setWaveColor(WaveColorEnum.PURPLE);
   }, []);
+  const navigate = useNavigate();
+
+  useSignalREffect(
+    "TerminarPartida",
+    () => {
+      navigate(-1);
+    },
+    []
+  );
+
+  useSignalREffect(
+    "AbandonarPartida",
+    () => {
+      toast.error(
+        "El otro jugador ha abandonado la partida, pero no te preocupes, tu eres el ganador"
+      );
+      navigate(-1);
+    },
+    [handleValidarGanador]
+  );
+
+  const anfitrionScore = score[user?.username as string]?.score || 0;
+
+  const invitadoScore = Object.entries(score).find(
+    (s) => !s.includes(user?.username as string)
+  );
 
   return (
     <GameLayout
       maxValue={10}
       player1={{
-        name: "Player 1",
-        score: 0,
+        name: user?.username,
+        score: anfitrionScore,
       }}
       player2={{
-        name: "Player 2",
-        score: 0,
+        name: invitadoScore?.[0],
+        score: invitadoScore?.[1].score || 0,
       }}
       leftSide={<Ppt isPlayer1 onJugada={setJugada} jugada={jugada} />}
       rightSide={<Ppt jugada={jugadaOponente} />}
       timer={timer}
+      numeroPArtida={numJudadas}
     />
   );
 };

@@ -1,9 +1,4 @@
 import { Progress } from "@nextui-org/react";
-import { useTimer } from "use-timer";
-
-export const useTimerCb = (cb: () => void) => {
-  useTimer();
-};
 
 export const Timer = ({
   timer,
@@ -17,6 +12,7 @@ export const Timer = ({
     value={timer}
     minValue={0}
     maxValue={maxValue}
+    aria-label="Timer"
     classNames={{
       track: "bg-foreground/20",
       indicator: "bg-gradient-to-r from-red-300 to-purple-500",

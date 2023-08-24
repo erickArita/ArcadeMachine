@@ -1,5 +1,7 @@
-import { Button } from "@nextui-org/react";
-import { UserIcon } from "../../../../components/iconst";
+import { Button, CircularProgress } from "@nextui-org/react";
+import { useState } from "react";
+import { Loader } from "../../../../components/Loader";
+import { RenderIf } from "../../../../components/RenderIf";
 import { Card, CardProps } from "../Card/Card";
 import {
   Historial,
@@ -7,7 +9,6 @@ import {
   Ranking,
   RankingData,
 } from "../Rankings/Rankings";
-import { Loader } from "../../../../components/Loader";
 
 interface GameLobbyProps {
   title?: string;
@@ -17,6 +18,7 @@ interface GameLobbyProps {
   historialData?: HistorialData[];
   rankingData?: RankingData[];
   isLoading?: boolean;
+  onCancelarBusqueda?: () => void;
 }
 
 export const GameLobby = ({
@@ -27,7 +29,20 @@ export const GameLobby = ({
   historialData,
   rankingData,
   isLoading,
+  onCancelarBusqueda,
 }: GameLobbyProps) => {
+  const [busqueda, setBusqueda] = useState(false);
+
+  const handleBuscarPartida = () => {
+    if (busqueda) {
+      onCancelarBusqueda?.();
+      setBusqueda(false);
+    } else {
+      onBuscarPartida();
+      setBusqueda(true);
+    }
+  };
+
   return (
     <Loader isLoading={isLoading}>
       <section className="flex flex-col gap-10 bg-white">
@@ -57,12 +72,24 @@ export const GameLobby = ({
           to-yellow-500
           text-white shadow-lg"
             radius="sm"
+            startContent={
+              <RenderIf condition={!!buscandoPartida}>
+                <CircularProgress
+                  size="sm"
+                  classNames={{
+                    base: "max-w-md",
+                    track: "drop-shadow-md border border-default",
+                    indicator: "bg-gradient-to-r from-pink-500 to-yellow-500",
+                    label: "tracking-wider font-medium text-default-600",
+                    value: "text-foreground/60",
+                  }}
+                />
+              </RenderIf>
+            }
             size="lg"
-            startContent={<UserIcon />}
-            onClick={onBuscarPartida}
-            isLoading={buscandoPartida}
+            onClick={handleBuscarPartida}
           >
-            Buscar partida
+            {busqueda ? "Cancelar" : "Buscar partida"}
           </Button>
         </div>
       </section>

@@ -5,5 +5,4 @@ public enum ResultadoPartidaEnum
     Empate,
     Victoria,
     Derrota,
-    Ninguno
 }

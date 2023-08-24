@@ -15,8 +15,8 @@ const ScoreBase = () => (
 );
 
 interface ScoreProps {
-  scoreLeft: number;
-  scoreRight: number;
+  scoreLeft?: number;
+  scoreRight?: number;
 }
 
 export const Score = ({ scoreLeft, scoreRight }: ScoreProps) => {

@@ -1,5 +1,10 @@
-import { FC, PropsWithChildren, createContext, useContext } from "react";
-import { Navigate } from "react-router-dom";
+import {
+  FC,
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+} from "react";
 import { useGetUserDataQuery } from "../features/api/autentication/autorizacion";
 import { useAuth } from "../libraries/auth";
 import { AuthenticationResponse } from "../features/api/autentication/models/AutenticationResponse";
@@ -21,16 +26,10 @@ export const useUser = () => {
 };
 
 export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { logOut, isLoading } = useAuth();
-  const { data, isFetching, isError } = useGetUserDataQuery(undefined, {
-    skip: isLoading,
+  const { isLoading, token } = useAuth();
+  const { data, isFetching } = useGetUserDataQuery(undefined, {
+    skip: isLoading || !token,
   });
-  console.log(isError);
-
-  if (isError && !isLoading) {
-    logOut();
-    return <Navigate to="/" />;
-  }
 
   return (
     <UserContext.Provider

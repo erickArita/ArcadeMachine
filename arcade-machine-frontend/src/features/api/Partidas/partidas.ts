@@ -1,5 +1,6 @@
 import { baseApi } from "../../../store";
 import { Minijuego } from "./models/Minijuego";
+import { Partida } from "./models/Partida";
 import { ScoreResponse } from "./models/ScoresResponse";
 import { SincronizarJugadaRequest } from "./models/SincronizarJugadaRequest";
 import { ValidarGanadorRequest } from "./models/ValidarGanadorRequest";
@@ -44,7 +45,7 @@ const gamesApi = gamesApiWithTags.injectEndpoints({
         method: "POST",
         body: {
           partidaId,
-          jugadorId,
+          usuarioId: jugadorId,
         },
       }),
     }),
@@ -58,6 +59,11 @@ const gamesApi = gamesApiWithTags.injectEndpoints({
         url: `${controllerName}/ObtenerMiniJuego?juegoId=${juegoId}`,
       }),
     }),
+    obtenerPartidas: builder.query<Partida, { partidaId: string }>({
+      query: ({ partidaId }) => ({
+        url: `${controllerName}/ObtenerPartida?partidaId=${partidaId}`,
+      }),
+    }),
   }),
 });
 
@@ -68,4 +74,5 @@ export const {
   useTerminarPartidaMutation,
   useObtenerJuegosQuery,
   useObtenerJuegoPorIdQuery,
+  useObtenerPartidasQuery
 } = gamesApi;

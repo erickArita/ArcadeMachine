@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { GameLobby } from "../libraries/games/components/GameLobby/GameLobby";
 import { WaveColorEnum } from "../libraries/games/enums/waveColor";
-import { useSignalREffect } from "../providers/SignalProvider";
+import { invoke, useSignalREffect } from "../providers/SignalProvider";
 import { useUser } from "../providers/UserProvider";
 import { useWaves } from "../providers/WavesProvider";
 import {
@@ -51,6 +51,11 @@ export const GameLobbyFeature = () => {
     setBuscandoPartida(true);
   };
 
+  const onCancelarBusqueda = () => {
+    invoke("AbandonarPartida", user?.userId);
+    setBuscandoPartida(false);
+  };
+
   return (
     <GameLobby
       buscandoPartida={buscandoPartida}
@@ -63,6 +68,7 @@ export const GameLobbyFeature = () => {
       title={juego?.nombre || ""}
       onBuscarPartida={onEmparejar}
       historialData={[]}
+      onCancelarBusqueda={onCancelarBusqueda}
       isLoading={isLoading}
       rankingData={[]}
     />

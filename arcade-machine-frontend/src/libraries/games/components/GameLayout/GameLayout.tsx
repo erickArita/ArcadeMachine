@@ -4,19 +4,19 @@ import { Score } from "../Score/Score";
 
 import "./gameLayout.css";
 
+export interface Score {
+  name: string;
+  score: number;
+}
+
 interface GameLayoutProps {
   timer: number;
   maxValue: number;
-  player1: {
-    name: string;
-    score: number;
-  };
-  player2: {
-    name: string;
-    score: number;
-  };
+  player1: Partial<Score>;
+  player2: Partial<Score>;
   leftSide: React.ReactNode;
   rightSide: React.ReactNode;
+  numeroPArtida?: number;
 }
 
 export const GameLayout: FC<GameLayoutProps> = ({
@@ -26,8 +26,14 @@ export const GameLayout: FC<GameLayoutProps> = ({
   player2,
   leftSide,
   rightSide,
+  numeroPArtida,
 }) => (
-  <section className="flex gameLayout  pt-[150px] flex-col vh-100 ">
+  <section className="flex gameLayout  pt-[150px] flex-col vh-100  relative">
+    <div className="absolute w-full flex justify-center z-[1999999999999999999] top-[20rem]">
+      <p className="score_value  text-gray-600  ">
+        {numeroPArtida}
+      </p>
+    </div>
     <div className="flex justify-around   items-center z-10">
       <p className="playerName">{player1.name}</p>
 

@@ -3,6 +3,6 @@
 namespace ArcadeMachine.Core.Partida.Services.PartidaService.Modelos;
 
 public record Score(
-    int ScoreUsuario1,
-    int ScoreUsuario2,
-    TipoJugadorEnum UsuarioGanador);
+    int score,
+    bool isWinner
+);

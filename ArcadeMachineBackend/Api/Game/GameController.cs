@@ -9,6 +9,7 @@ using ArcadeMachine.Core.Partida.Services.PartidaService.Modelos;
 using ArcadeMachine.Domain.Entities;
 using ArcadeMachine.Infraestructure.Persistence;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -24,7 +25,6 @@ public class GameController : ControllerBase
     private readonly IPartidaRepositorio _partidaRepositorio;
     private readonly IHubContext<GameHub> _hubContext;
     private readonly UserManager<IdentityUser> _userManager;
-    private readonly AplicationDbContext _context;
 
     public GameController(IPartidaService partidaService, IPartidaRepositorio partidaRepositorio,
         IHubContext<GameHub> hubContext,
@@ -36,7 +36,6 @@ public class GameController : ControllerBase
         _partidaRepositorio = partidaRepositorio;
         _hubContext = hubContext;
         _userManager = userManager;
-        _context = context;
     }
 
 
@@ -64,7 +63,7 @@ public class GameController : ControllerBase
     }
 
     [HttpGet]
-    public async void SincronizarJugada([FromQuery] SincronizarJugadaQuery query)
+    public async Task SincronizarJugada([FromQuery] SincronizarJugadaQuery query)
     {
         var partida = _partidaService.ObtenerPartida(query.PartidaId);
         var contrincante = partida.ObtenerContrincante(query.JugadorId);
@@ -72,29 +71,38 @@ public class GameController : ControllerBase
     }
 
     [HttpPut]
-    public async void ValidarGanador([FromBody] ValidarGanadorRequest request)
+    public async Task ValidarGanador([FromBody] ValidarGanadorRequest request)
     {
-        var partidaActualizada =
-            _partidaService.ActualizarPartida(request.PartidaId, request.JugadorId, request.Resultado);
-        var user1 = partidaActualizada.userName1;
-        var user2 = partidaActualizada.userName2;
+        var (partidaActualizada, ganador) =
+            _partidaService.SumarGanador(request.PartidaId, request.JugadorId, request.Resultado);
 
-        await _hubContext.Clients.Users(user1, user2).SendAsync("Score", partidaActualizada.ResultadoJugador1,
-            partidaActualizada.ResultadoJugador2);
+        var user = partidaActualizada.ObtenerUserName(request.JugadorId);
+        var use2 = partidaActualizada.ObtenerContrincante(request.JugadorId);
+
+        await _hubContext.Clients.Users(user, use2).SendAsync("Score", new
+            Dictionary<string, Score>(
+                new List<KeyValuePair<string, Score>>
+                {
+                    new(user, new(partidaActualizada.ResultadoJugador1, ganador == user)),
+                    new(use2, new(partidaActualizada.ResultadoJugador2, ganador == use2))
+                }
+            ));
     }
 
 
     [HttpPost]
-    public async Task<Score> TerminarPartida([FromBody] TerminarPartidaRequest request)
+    public async Task<OkResult> TerminarPartida([FromBody] TerminarPartidaRequest request)
     {
         var partida = _partidaService.TerminarPartida(request.PartidaId, request.JugadorId);
-        if (!partida.Emparejada())
+
+
+        if (partida is not null)
         {
             await _partidaRepositorio.CrearPartida(partida);
+            await _hubContext.Clients.Users(partida.userName1, partida.userName2).SendAsync("TerminarPartida");
         }
 
-        var score = _partidaService.ObtenerScore(partida);
-        return score;
+        return Ok();
     }
 
     [HttpGet]
