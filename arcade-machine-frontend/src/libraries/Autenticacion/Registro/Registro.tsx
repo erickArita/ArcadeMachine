@@ -16,7 +16,7 @@ interface IFormInputs {
 }
 
 const filterErrors = (errors: CustomError[]) => {
-  let errorByField = {
+  const errorByField: Record<string, string[]> = {
     password: [],
     email: [],
     userName: [],
@@ -24,13 +24,13 @@ const filterErrors = (errors: CustomError[]) => {
 
   errors.forEach((error) => {
     if (error.code.includes("Password")) {
-      errorByField.password.push(error.description as string);
+      errorByField.password.push(error.description as unknown as string);
     }
     if (error.code.includes("Email")) {
-      errorByField.email.push(error.description as string);
+      errorByField.email.push(error.description as unknown as string);
     }
     if (error.code.includes("UserName")) {
-      errorByField.userName.push(error.description as string);
+      errorByField.userName.push(error.description as unknown as string);
     }
   });
 

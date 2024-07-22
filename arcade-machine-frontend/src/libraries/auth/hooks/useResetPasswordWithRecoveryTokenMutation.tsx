@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react";
-import { IError } from "../types/Error.type";
 import { API_URL } from "../../../globals/environment";
 
 export const useResetPasswordWithRecoveryTokenMutation = () => {
@@ -41,9 +40,9 @@ export const useResetPasswordWithRecoveryTokenMutation = () => {
       } catch (e) {
         setIsLoading(false);
         setIsError(true);
-        setError((e as IError).Errors);
+        setError((e as { Errors: string }).Errors);
 
-        throw (e as IError).Errors;
+        throw (e as { Errors: string }).Errors;
       }
     },
     []

@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { GameLobby } from "../libraries/games/components/GameLobby/GameLobby";
 import { WaveColorEnum } from "../libraries/games/enums/waveColor";
 import { invoke, useSignalREffect } from "../providers/SignalProvider";
-import { useUser } from "../providers/UserProvider";
+import { useUser } from "../libraries/auth/hooks/useUser";
 import { useWaves } from "../providers/WavesProvider";
 import {
   useLazyEmparejarQuery,

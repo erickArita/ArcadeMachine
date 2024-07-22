@@ -5,11 +5,12 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  ModalProps,
 } from "@nextui-org/react";
 
 interface CustomModalProps {
   title?: string;
-  size?: string;
+  size?: ModalProps["size"];
   isOpen?: boolean;
   onClose?: () => void;
 }

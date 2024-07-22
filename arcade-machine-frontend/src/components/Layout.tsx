@@ -3,7 +3,7 @@ import { Section } from "./Section";
 import { Navbar } from "./Navbar";
 import { HeaderWaves } from "./HeaderWaves";
 import { useAuth } from "../libraries/auth";
-import { useUser } from "../providers/UserProvider";
+import { useUser } from "../libraries/auth/hooks/useUser";
 import { useWaves } from "../providers/WavesProvider";
 
 interface LayoutProps {

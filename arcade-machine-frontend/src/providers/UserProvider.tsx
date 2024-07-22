@@ -1,29 +1,18 @@
 import {
   FC,
   PropsWithChildren,
-  createContext,
-  useContext,
-  useEffect,
-} from "react";
-import { useGetUserDataQuery } from "../features/api/autentication/autorizacion";
-import { useAuth } from "../libraries/auth";
-import { AuthenticationResponse } from "../features/api/autentication/models/AutenticationResponse";
+  createContext} from "react";
 import { Loader } from "../components/Loader";
+import { useGetUserDataQuery } from "../features/api/autentication/autorizacion";
+import { AuthenticationResponse } from "../features/api/autentication/models/AutenticationResponse";
+import { useAuth } from "../libraries/auth";
 
 interface UserProviderProps {
   user: AuthenticationResponse | undefined;
   isLoading: boolean;
 }
 
-const UserContext = createContext<UserProviderProps | null>(null);
-
-export const useUser = () => {
-  const context = useContext(UserContext);
-  if (!context) {
-    throw new Error("useUser debe estar dentro del proveedor UserProvider");
-  }
-  return context;
-};
+export const UserContext = createContext<UserProviderProps | null>(null);
 
 export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
   const { isLoading, token } = useAuth();

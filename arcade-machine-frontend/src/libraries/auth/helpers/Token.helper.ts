@@ -1,4 +1,4 @@
-import jwtDecode, { JwtPayload } from "jwt-decode";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 import { secondsToMilliseconds } from "../utils/secondsToMilliseconds";
 
 export const deleteToken = () => {

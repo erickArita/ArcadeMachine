@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { toast } from "react-hot-toast";
 import { API_URL } from "../globals/environment";
 
@@ -30,7 +31,9 @@ export const login = async ({
     }),
   });
   const data = (await response.json()) as BackendResponse<Auth>;
+  //@ts-ignore
   if (data?.value?.status === "Error") {
+    //@ts-ignore
     toast.error(data.value.message);
   }
 
@@ -69,13 +72,14 @@ export const register = async ({
 
   const data = (await response.json()) as BackendResponse<Auth>;
   let errors: CustomError[] = [];
-
+  // @ts-ignore
   if (data?.value?.status === "Error") {
+    // @ts-ignore
     if (data.value.data === null) {
-      console.log(data.value.message);
-
+      // @ts-ignore
       toast.error(data.value.message);
     } else {
+      // @ts-ignore
       errors = data.value.data as CustomError[];
     }
     throw errors;

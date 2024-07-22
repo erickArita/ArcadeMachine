@@ -7,7 +7,7 @@ import { GameLayout } from "../libraries/games/components/GameLayout/GameLayout"
 import { WaveColorEnum } from "../libraries/games/enums/waveColor";
 import { Ppt } from "../libraries/games/features/PPT/Ppt";
 import { invoke, useSignalREffect } from "../providers/SignalProvider";
-import { useUser } from "../providers/UserProvider";
+import { useUser } from "../libraries/auth/hooks/useUser";
 import { useWaves } from "../providers/WavesProvider";
 import {
   useTerminarPartidaMutation,
@@ -87,7 +87,6 @@ export const PiedraPepelpTijera = () => {
 
   const [score, setsCore] = useState<Score>({});
   const [numJudadas, setNumJudadas] = useState(0);
-  const [imWinnerw, setImWinner] = useState(false);
 
   const { reset, start } = useTimer({
     initialTime: 8,
