@@ -1,4 +1,4 @@
-import "./Score.css";
+import "./score.css";
 const ScoreBase = () => (
   <svg
     width="inherit"
