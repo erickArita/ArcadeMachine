@@ -1,35 +1,33 @@
-# Usamos la imagen del SDK de .NET 7 para compilar la aplicación
+# Use the .NET 7 SDK image to build the application
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 
-# Definimos el directorio de trabajo
+# Set the working directory
 WORKDIR /app
 
-# Copiamos el archivo del proyecto (esto incluye todas las carpetas dentro de ArcadeMachine)
+# Copy the project file and restore dependencies
 COPY ArcadeMachine.csproj .
-
-# Restauramos las dependencias de NuGet
 RUN dotnet restore
 
-# Copiamos todo el código fuente
-COPY . .
+# Copy the entire source code
+COPY ./ .
 
-# Compilamos la aplicación en modo Release
-RUN dotnet build --configuration Release --no-restore
+# Build the application in Release mode
+RUN dotnet build --configuration Release
 
-# Publicamos la aplicación para optimizarla y dejarla lista para producción
-RUN dotnet publish --configuration Release --no-build --output /out
+# Publish the application for production
+RUN dotnet publish --configuration Release --output /out
 
-# Usamos la imagen de runtime de .NET 7 para ejecutar la aplicación
+# Use the .NET 7 runtime image to run the application
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS final
 
-# Definimos el directorio de trabajo
+# Set the working directory
 WORKDIR /app
 
-# Copiamos los archivos publicados desde el contenedor de build
+# Copy the published files from the build stage
 COPY --from=build /out .
 
-# Exponemos el puerto 80 (o el que utilice tu app)
+# Expose port 80
 EXPOSE 80
 
-# Indicamos el comando para ejecutar la aplicación
+# Set the entry point to run the application
 ENTRYPOINT ["dotnet", "ArcadeMachine.dll"]
