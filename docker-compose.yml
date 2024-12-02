@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./ArcadeMachineBackend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"  # Exponer el puerto 80 dentro del contenedor en el puerto 5000
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=mydb;User=sa;Password=your_password  # Usar variables de entorno para datos sensibles
+    networks:
+      - arcade-network
+    depends_on:
+      - sqlserver
+    restart: always  # Para reiniciar el contenedor si falla
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=your_password  # Usar una contraseña segura para el usuario SA
+    ports:
+      - "1433:1433"  # Exponer el puerto para conexión con la base de datos
+    networks:
+      - arcade-network
+    volumes:
+      - sqlserver-data:/var/opt/mssql  # Volumen persistente para los datos de SQL Server
+    restart: always  # Para reiniciar el contenedor si falla
+
+networks:
+  arcade-network:
+    driver: bridge
+
+volumes:
+  sqlserver-data:  # Volumen persistente para SQL Server
