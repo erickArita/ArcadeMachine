@@ -3,12 +3,12 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /app
 
 # Copiar los archivos de proyecto y restaurar las dependencias
-COPY ./ArcadeMachine.csproj ./
+COPY ArcadeMachine.csproj ./
 RUN dotnet restore
 
 # Copiar el resto de los archivos y compilar la aplicación
 COPY . ./
-RUN dotnet publish -c Release -o /app/out
+RUN dotnet publish -c Release -o out
 
 # Establecer la imagen base para la fase de ejecución
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
