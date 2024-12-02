@@ -12,12 +12,10 @@ COPY package.json .
 
 RUN pnpm install
 
-RUN pnpm add -g serve
-
 COPY . .
 
 RUN pnpm run build
 
 EXPOSE 3000
 
-CMD [ "serve", "-s", "dist" ]
+RUN pnpm run preview
