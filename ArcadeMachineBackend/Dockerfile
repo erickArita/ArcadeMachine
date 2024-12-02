@@ -20,6 +20,11 @@ EXPOSE 80
 
 # Establecer la variable de entorno para el entorno de producción
 ENV ASPNETCORE_ENVIRONMENT=Production
+RUN sed -i 's/\[openssl_init\]/# [openssl_init]/' /etc/ssl/openssl.cnf
+
+RUN printf "\n\n[openssl_init]\nssl_conf = ssl_sect" >> /etc/ssl/openssl.cnf
+RUN printf "\n\n[ssl_sect]\nsystem_default = ssl_default_sect" >> /etc/ssl/openssl.cnf
+RUN printf "\n\n[ssl_default_sect]\nMinProtocol = TLSv1\nCipherString = DEFAULT@SECLEVEL=0\n" >> /etc/ssl/openssl.cnf
 
 # Comando para ejecutar la aplicación
 ENTRYPOINT ["dotnet", "ArcadeMachine.dll"]
