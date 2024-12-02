@@ -1,8 +1,6 @@
 using System.Text;
-using ArcadeMachine.Api;
 using ArcadeMachine.Core.Autentication.Services;
 using ArcadeMachine.Core.Autentication.Utilities;
-using ArcadeMachine.Core.Partida;
 using ArcadeMachine.Core.Partida.Repositorios.PartidaRepositorio;
 using ArcadeMachine.Core.Partida.Services;
 using ArcadeMachine.Core.Partida.Services.PartidaService;
@@ -44,7 +42,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddDbContext<AplicationDbContext>(opt =>
-    opt.UseSqlServer("name=DefaultConnection")
+    opt.UseNpgsql("name=DefaultConnection")
 );
 
 
