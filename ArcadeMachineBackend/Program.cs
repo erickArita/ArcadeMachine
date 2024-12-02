@@ -128,10 +128,16 @@ builder.Services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
 
 var app = builder.Build();
 
+await using var scope = app.Services.CreateAsyncScope())
+
+var dbContext = scope.ServiceProvider.GetRequiredService<AplicationDbContext>();
+await dbContext.Database.MigrateAsync();
+
+
+MiniJuegoSeeder.SeedData(app.Services);
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    MiniJuegoSeeder.SeedData(app.Services);
     app.UseSwagger();
     app.UseSwaggerUI();
 }
@@ -149,4 +155,4 @@ app.MapControllers();
 app.MapHub<GameHub>("/GameHub");
 
 
-app.Run();
+await app.RunAsync();
