@@ -21,7 +21,7 @@ export const SignalRProvider: FC<PropsWithChildren> = ({ children }) => {
       connectEnabled={!!token}
       accessTokenFactory={() => token}
       dependencies={[token]} //remove previous connection and create a new connection if changed
-      url={`${API_URL}GameHub`}
+      url={`${API_URL}/GameHub`}
       logMessageContent={true}
       skipNegotiation
       transport={HttpTransportType.WebSockets}
