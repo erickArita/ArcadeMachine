@@ -19,7 +19,7 @@ export const login = async ({
   username: string;
   password: string;
 }) => {
-  const response = await fetch(API_URL + "api/Authentication/Login", {
+  const response = await fetch(API_URL + "/api/Authentication/Login", {
     headers: {
       accept: "*/*",
       "Content-Type": "application/json",
