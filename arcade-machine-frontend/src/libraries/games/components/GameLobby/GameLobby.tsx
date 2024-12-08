@@ -39,10 +39,6 @@ export const GameLobby = ({
   const [ busqueda, setBusqueda ] = useState(false);
 
   const handleBuscarPartida = () => {
-    console.log("¡Partida encontrada!");
-    
-    speak("¡Partida encontrada!");
-    return
     if(busqueda) {
       onCancelarBusqueda?.();
       setBusqueda(false);

@@ -40,7 +40,11 @@ export const GameLobbyFeature = () => {
     "Match",
     (partidaId, tipoJugador) => {
       setBuscandoPartida(false);
-      navigate(`partida/${partidaId}/${tipoJugador}`);
+      speak("¡Partida encontrada!");
+
+      setTimeout(() => {
+        navigate(`partida/${partidaId}/${tipoJugador}`);
+      }, 1000);
     },
     []
   );
