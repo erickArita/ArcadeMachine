@@ -17,7 +17,7 @@ import { PiedraPapelTijeraEnum } from "./api/enums/PiedraPepelTijeraEnum";
 import { ResultadoPartidaEnum } from "./api/enums/ResultadoPartidaEunm";
 import { SyncronizationEnum } from "./api/enums/SyncronizationEnum";
 import { TipoJugadorEnum } from "./api/enums/TipoUsuarioEnum";
-import { WinOrLose } from "../libraries/games/components/WinOrLose/WinOrLose";
+import { WinOrLoseOrTie } from "../libraries/games/components/WinOrLose/WinOrLose";
 
 const validarGanador = (
   jugada1: PiedraPapelTijeraEnum,
@@ -49,13 +49,13 @@ const validarGanador = (
       ResultadoPartidaEnum.Derrota,
     ],
   ];
-  const res = jugadas[jugada1 - 1][jugada2 - 1];
+  const res = jugadas[ jugada1 - 1 ][ jugada2 - 1 ];
 
   return res;
 };
 
 interface Score {
-  [key: string]: {
+  [ key: string ]: {
     score: number;
     isWinner: boolean;
   };
@@ -68,25 +68,25 @@ export const PiedraPepelpTijera = () => {
     tipoJugador: string;
   }>();
 
-  const [validarResultados] = useValidarGanadorMutation();
-  const [terminarPartida] = useTerminarPartidaMutation();
+  const [ validarResultados ] = useValidarGanadorMutation();
+  const [ terminarPartida ] = useTerminarPartidaMutation();
   const tipoJugadorParced = Number(tipoJugador) as unknown as TipoJugadorEnum;
 
   const { user } = useUser();
 
-  const [jugada, setJugada] = useState<PiedraPapelTijeraEnum>(
+  const [ jugada, setJugada ] = useState<PiedraPapelTijeraEnum>(
     PiedraPapelTijeraEnum.Papel
   );
-  const [jugadaOponente, setJugadaOponente] = useState<PiedraPapelTijeraEnum>(
+  const [ jugadaOponente, setJugadaOponente ] = useState<PiedraPapelTijeraEnum>(
     PiedraPapelTijeraEnum.Papel
   );
 
   const ref = useRef(1);
 
-  const [timer, setTimer] = useState(10);
+  const [ timer, setTimer ] = useState(10);
 
-  const [score, setsCore] = useState<Score>({});
-  const [numJudadas, setNumJudadas] = useState(0);
+  const [ score, setsCore ] = useState<Score>({});
+  const [ numJudadas, setNumJudadas ] = useState(0);
 
   const { reset, start } = useTimer({
     initialTime: 8,
@@ -101,7 +101,7 @@ export const PiedraPepelpTijera = () => {
         user?.userId as string,
         jugada
       );
-      if (ref.current < 3) {
+      if(ref.current < 3) {
         setNumJudadas(numJudadas + 1);
         ref.current = ref.current + 1;
         setTimeout(() => {
@@ -111,7 +111,7 @@ export const PiedraPepelpTijera = () => {
       }
     },
     onTimeUpdate(time) {
-      if (tipoJugadorParced == TipoJugadorEnum.Anfitrion) {
+      if(tipoJugadorParced == TipoJugadorEnum.Anfitrion) {
         invoke(
           "SincronizarJugada",
           SyncronizationEnum.Timer,
@@ -124,7 +124,7 @@ export const PiedraPepelpTijera = () => {
     },
   });
 
-  const anfitrionScore = score[user?.username as string]?.score || 0;
+  const anfitrionScore = score[ user?.username as string ]?.score || 0;
 
   const invitadoScore = Object.entries(score).find(
     (s) => !s.includes(user?.username as string)
@@ -137,7 +137,7 @@ export const PiedraPepelpTijera = () => {
         partidaId: partidaId as string,
         resultado: validarGanador(jugada, jugadaOponente),
       }).unwrap();
-      if (ref.current == 3) {
+      if(ref.current == 3) {
         console.log(user?.userId);
 
         await terminarPartida({
@@ -146,26 +146,26 @@ export const PiedraPepelpTijera = () => {
         }).unwrap();
       }
     },
-    [jugada, partidaId, terminarPartida, user?.userId]
+    [ jugada, partidaId, terminarPartida, user?.userId ]
   );
 
   useSignalREffect(
     "SincronizarJugada",
     (type: SyncronizationEnum, message: number) => {
-      if (type == SyncronizationEnum.Jugada) {
+      if(type == SyncronizationEnum.Jugada) {
         setJugadaOponente(message);
-        if (tipoJugadorParced == TipoJugadorEnum.Anfitrion) {
+        if(tipoJugadorParced == TipoJugadorEnum.Anfitrion) {
           handleValidarGanador(message);
         }
       }
 
-      if (type == SyncronizationEnum.Timer) {
-        if (tipoJugadorParced == TipoJugadorEnum.Invitado) {
+      if(type == SyncronizationEnum.Timer) {
+        if(tipoJugadorParced == TipoJugadorEnum.Invitado) {
           setTimer(message);
         }
       }
     },
-    [handleValidarGanador, tipoJugadorParced]
+    [ handleValidarGanador, tipoJugadorParced ]
   );
 
   useSignalREffect(
@@ -173,7 +173,7 @@ export const PiedraPepelpTijera = () => {
     (resultadoJudagoe1) => {
       setsCore(resultadoJudagoe1);
     },
-    [invitadoScore]
+    [ invitadoScore ]
   );
 
   useEffect(() => {
@@ -185,7 +185,7 @@ export const PiedraPepelpTijera = () => {
     navigate(-1);
   };
 
-  const [openResults, setopenResults] = useState(false);
+  const [ openResults, setopenResults ] = useState(false);
   useSignalREffect(
     "TerminarPartida",
     () => {
@@ -202,8 +202,17 @@ export const PiedraPepelpTijera = () => {
       );
       navigate(-1);
     },
-    [handleValidarGanador]
+    [ handleValidarGanador ]
   );
+  const validarSiganoPerdioEmpato = (anfitrioScore: number, invitadoScore: number): ResultadoPartidaEnum => {
+    if(anfitrioScore > invitadoScore) {
+      return ResultadoPartidaEnum.Victoria;
+    }
+    if(anfitrioScore < invitadoScore) {
+      return ResultadoPartidaEnum.Derrota;
+    }
+    return ResultadoPartidaEnum.Empate;
+  }
 
   return (
     <>
@@ -214,18 +223,18 @@ export const PiedraPepelpTijera = () => {
           score: anfitrionScore,
         }}
         player2={{
-          name: invitadoScore?.[0],
-          score: invitadoScore?.[1].score || 0,
+          name: invitadoScore?.[ 0 ],
+          score: invitadoScore?.[ 1 ].score || 0,
         }}
         leftSide={<Ppt isPlayer1 onJugada={setJugada} jugada={jugada} />}
         rightSide={<Ppt jugada={jugadaOponente} />}
         timer={timer}
         numeroPArtida={numJudadas}
       />
-      <WinOrLose
-        isOpen={openResults}
+      <WinOrLoseOrTie
+        isOpen={true}
         oncClick={onFinalizar}
-        win={anfitrionScore > (invitadoScore?.[1]?.score || 0)}
+        result={validarSiganoPerdioEmpato(anfitrionScore, invitadoScore?.[ 1 ].score || 0)}
       />
     </>
   );

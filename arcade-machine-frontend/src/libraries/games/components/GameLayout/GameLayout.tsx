@@ -29,7 +29,7 @@ export const GameLayout: FC<GameLayoutProps> = ({
   numeroPArtida,
 }) => (
   <section className="flex gameLayout  pt-[150px] flex-col vh-100  relative">
-    <div className="absolute w-full flex justify-center z-[1999999999999999999] top-[20rem]">
+    <div className="absolute w-full flex justify-center z-[49] top-[20rem]">
       <p className="score_value  text-gray-600  z-10 ">
         {numeroPArtida}
       </p>

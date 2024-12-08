@@ -1,22 +1,41 @@
 import { Button } from "@nextui-org/react";
 import Confetti from "react-confetti";
 
-export interface WinOrLoseProps {
-  oncClick?: () => void;
-  isOpen?: boolean;
-  win?: boolean;
-}
 
 import "./WinOrLose.css";
 import { CustomModal } from "../../../../components/CustomModal.tsx";
 import { useTimer } from "use-timer";
 import { RenderIf } from "../../../../components/RenderIf.tsx";
 import { useEffect } from "react";
+import { ResultadoPartidaEnum } from "../../../../features/api/enums/ResultadoPartidaEunm.ts";
 
-export const WinOrLose = ({
+export interface WinOrLoseProps {
+  oncClick?: () => void;
+  isOpen?: boolean;
+  win?: boolean;
+  result: ResultadoPartidaEnum
+}
+
+const resultMessages: Record<ResultadoPartidaEnum, string> = {
+  [ ResultadoPartidaEnum.Derrota ]: "Fuiste humillado",
+  [ ResultadoPartidaEnum.Empate ]: "Empate",
+  [ ResultadoPartidaEnum.Victoria ]: "Ganaste Felicidades"
+}
+
+
+const getResults = (result: ResultadoPartidaEnum) => {
+  return {
+    message: resultMessages[ result ],
+    win: result === ResultadoPartidaEnum.Victoria,
+    tie: result === ResultadoPartidaEnum.Empate,
+    lose: result === ResultadoPartidaEnum.Derrota
+  }
+}
+
+export const WinOrLoseOrTie = ({
   oncClick,
   isOpen,
-  win = false,
+  result
 }: WinOrLoseProps) => {
   const { time, start } = useTimer({
     initialTime: 15,
@@ -28,24 +47,26 @@ export const WinOrLose = ({
   });
 
   useEffect(() => {
-    if (isOpen) start();
-  }, [isOpen]);
+    if(isOpen) start();
+  }, [ isOpen ]);
 
+
+  const { lose, message, tie, win } = getResults(result)
   return (
     <CustomModal isOpen={isOpen} size={"xl"}>
       <div className="WinOrLose h-[300px] flex justify-center items-center ">
         <div className="flex flex-col  gap-[2rem]">
           <h2 className="text-gray-500  text-5xl">
-            {win ? "Ganaste Felicidades" : "Fuiste humillado"}
+            {message}
           </h2>
           <div className="flex justify-center flex-col">
             <div className="relative flex justify-center">
-              <RenderIf condition={!!win}>
+              <RenderIf condition={win}>
                 <img src="/GanarPerder/ganar.gif" width={100} alt="" />
                 <img src="/GanarPerder/ganar.gif" width={100} alt="" />
                 <img src="/GanarPerder/ganar.gif" width={100} alt="" />
               </RenderIf>
-              <RenderIf condition={!win}>
+              <RenderIf condition={lose || tie}>
                 <img src="/GanarPerder/perder.gif" width={100} alt="" />
                 <img src="/GanarPerder/perder.gif" width={100} alt="" />
                 <img src="/GanarPerder/perder.gif" width={100} alt="" />
