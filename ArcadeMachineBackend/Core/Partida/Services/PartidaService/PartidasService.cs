@@ -130,6 +130,7 @@ public class PartidasService : IPartidaService
                 partida.ResultadoJugador2 = partida.ResultadoJugador1 + 1;
             }
 
+            Partidas.Remove(partida);
             return partida;
         }
 
