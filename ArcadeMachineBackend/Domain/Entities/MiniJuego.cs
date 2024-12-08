@@ -11,5 +11,5 @@ public class MiniJuego
     [Required] public string Img { get; set; }
     [Required] public string Color { get; set; }
     [Required] public string ShadowColor { get; set; }
-    
+    [Required] public string Slug { get; set; }
 }

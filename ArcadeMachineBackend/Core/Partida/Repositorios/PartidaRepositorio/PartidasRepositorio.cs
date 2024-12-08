@@ -26,7 +26,7 @@ public class PartidasRepositorio : IPartidaRepositorio
             usuario2Id = partidaTemporal.JugadorId2.ToString(),
             puntajeUsuario1 = partidaTemporal.ResultadoJugador1,
             puntajeUsuario2 = partidaTemporal.ResultadoJugador2,
-            fechaPartida = new DateTime(),
+            fechaPartida = DateTime.Now
         };
         await _appContext.Partidas.AddAsync(partida);
         await _appContext.SaveChangesAsync();
