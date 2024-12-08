@@ -9,6 +9,7 @@ import {
   Ranking,
   RankingData,
 } from "../Rankings/Rankings";
+import { speak } from "../../../../utils/speechUtil";
 
 interface GameLobbyProps {
   title?: string;
@@ -35,10 +36,14 @@ export const GameLobby = ({
   loadingHistorial,
   loadingRanking,
 }: GameLobbyProps) => {
-  const [busqueda, setBusqueda] = useState(false);
+  const [ busqueda, setBusqueda ] = useState(false);
 
   const handleBuscarPartida = () => {
-    if (busqueda) {
+    console.log("¡Partida encontrada!");
+    
+    speak("¡Partida encontrada!");
+    return
+    if(busqueda) {
       onCancelarBusqueda?.();
       setBusqueda(false);
     } else {

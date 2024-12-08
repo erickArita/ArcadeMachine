@@ -13,6 +13,7 @@ import {
   useRankingPorJuegoQuery,
   useWankingPorUsuarioQuery,
 } from "./api/rankings/rankings";
+import { speak } from "../utils/speechUtil";
 
 export const GameLobbyFeature = () => {
   const { tipoJuego } = useParams<{ tipoJuego: string }>();
@@ -29,17 +30,15 @@ export const GameLobbyFeature = () => {
     }
   );
 
-  const [emparejarQuery] = useLazyEmparejarQuery();
+  const [ emparejarQuery ] = useLazyEmparejarQuery();
 
   const { setWaveColor } = useWaves();
 
-  const [buscandoPartida, setBuscandoPartida] = useState(false);
+  const [ buscandoPartida, setBuscandoPartida ] = useState(false);
 
   useSignalREffect(
     "Match",
     (partidaId, tipoJugador) => {
-      console.log("Match", partidaId, tipoJugador);
-
       setBuscandoPartida(false);
       navigate(`partida/${partidaId}/${tipoJugador}`);
     },
@@ -47,7 +46,7 @@ export const GameLobbyFeature = () => {
   );
 
   const onEmparejar = () => {
-    if (!user || !tipoJuego) return;
+    if(!user || !tipoJuego) return;
     emparejarQuery({ userId: user.userId, juegoId: tipoJuego });
     setBuscandoPartida(true);
   };
