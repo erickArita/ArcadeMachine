@@ -23,15 +23,17 @@ export const CardContainer = ({
             {titulo}
           </h1>
         </div>
-        <div className="pb-20 grid grid-cols-3  max-w-7xl   gap-32  row-span-4  ">
-          {miniJuegos?.map((minijuego, i) => (
-            <div className={`grid  ${!(i % 2) ? "items-end" : "items-start"}`}>
+        <div className="pb-20 grid grid-cols-2  max-w-7xl   gap-32  row-span-4  ">
+          {miniJuegos?.map((minijuego) => (
+            <div key={minijuego.id}>
               <Card
                 color={minijuego.color}
                 img={minijuego.img}
                 shadowColor={minijuego.shadowColor}
                 title={minijuego.nombre}
-                oncClick={() => onSelectJuego?.(minijuego.slug)}
+                oncClick={() => {
+                  return onSelectJuego?.(minijuego.slug);
+                }}
               />
             </div>
           ))}

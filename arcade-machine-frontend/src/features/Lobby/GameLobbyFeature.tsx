@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { GameLobby } from "../../libraries/games/components/GameLobby/GameLobby";
-import { WaveColorEnum } from "../../libraries/games/enums/waveColor";
-import { invoke, useSignalREffect } from "../../providers/SignalProvider";
 import { useUser } from "../../libraries/auth/hooks/useUser";
+import { GameLobby } from "../../libraries/games/components/GameLobby/GameLobby";
+import { invoke, useSignalREffect } from "../../providers/SignalProvider";
 import { useWaves } from "../../providers/WavesProvider";
+import { speak } from "../../utils/speechUtil";
 import {
   useLazyEmparejarQuery,
   useObtenerJuegoPorIdQuery,
@@ -13,7 +13,6 @@ import {
   useRankingPorJuegoQuery,
   useWankingPorUsuarioQuery,
 } from "../api/rankings/rankings";
-import { speak } from "../../utils/speechUtil";
 
 export const GameLobbyFeature = () => {
   const { tipoJuego } = useParams<{ tipoJuego: string }>();
@@ -40,7 +39,7 @@ export const GameLobbyFeature = () => {
     "Match",
     (partidaId, tipoJugador) => {
       setBuscandoPartida(false);
-      speak("¡Partida encontrada!");
+      speak("   Partida encontrada");
 
 
       setTimeout(() => {
@@ -81,8 +80,9 @@ export const GameLobbyFeature = () => {
     );
 
   useEffect(() => {
-    setWaveColor(WaveColorEnum.PURPLE);
-  }, []);
+    if(juego?.metadata.waveColor)
+      setWaveColor(juego?.metadata.waveColor);
+  }, [ juego?.metadata.waveColor ]);
 
   return (
     <>

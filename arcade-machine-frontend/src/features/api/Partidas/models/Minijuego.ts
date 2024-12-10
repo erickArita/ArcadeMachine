@@ -1,3 +1,5 @@
+import type { WaveColorEnum } from "../../../../libraries/games/enums/waveColor";
+
 export interface Minijuego {
   id: string;
   nombre: string;
@@ -6,6 +8,7 @@ export interface Minijuego {
   shadowColor: string;
   slug: string,
   metadata: {
-    ia?: boolean
+    ia?: boolean,
+    waveColor?: WaveColorEnum
   }
 }

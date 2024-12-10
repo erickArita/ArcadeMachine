@@ -19,7 +19,6 @@ import { SyncronizationEnum } from "../api/enums/SyncronizationEnum";
 import { TipoJugadorEnum } from "../api/enums/TipoUsuarioEnum";
 import { WinOrLoseOrTie } from "../../libraries/games/components/WinOrLose/WinOrLose";
 import { inferirResultado } from "./sistemaExperto";
-import { speak } from "../../utils/speechUtil";
 
 interface Score {
   [ key: string ]: {
@@ -48,7 +47,7 @@ export const PiedraPepelpTijera = () => {
     PiedraPapelTijera.Papel
   );
 
-  const ref = useRef(1);
+  const ref = useRef(0);
   const [ timer, setTimer ] = useState(10);
 
   const [ score, setsCore ] = useState<Score>({});
@@ -104,12 +103,14 @@ export const PiedraPepelpTijera = () => {
         resultado: inferirResultado(jugada, jugadaOponente),
       }).unwrap();
       if(ref.current === 3) {
-        console.log(user?.userId);
+        console.log(ref.current);
+        setTimeout(() => {
+          terminarPartida({
+            partidaId: partidaId as string,
+            jugadorId: user?.userId as string,
+          }).unwrap();
 
-        await terminarPartida({
-          partidaId: partidaId as string,
-          jugadorId: user?.userId as string,
-        }).unwrap();
+        }, 1000);
       }
     },
     [ jugada, partidaId, terminarPartida, user?.userId ]
@@ -156,9 +157,6 @@ export const PiedraPepelpTijera = () => {
     "TerminarPartida",
     () => {
       setopenResults(true);
-      const res = validarSiganoPerdioEmpato(anfitrionScore, invitadoScore?.[ 1 ].score || 0)
-      speak(res === ResultadoPartida.Victoria ? 'Felicidades Ganaste' : 'Fuiste humillado')
-
     },
     []
   );

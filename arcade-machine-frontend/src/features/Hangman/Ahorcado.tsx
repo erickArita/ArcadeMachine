@@ -217,6 +217,7 @@ export function Ahorcado() {
         isOpen={openResults}
         oncClick={onFinalizar}
         result={gameState === 'won' ? ResultadoPartida.Victoria : ResultadoPartida.Derrota}
+        answer={word}
       />
     </div>
   )

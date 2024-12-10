@@ -4,6 +4,7 @@ using ArcadeMachine.Core.Partida.Services.PartidaService;
 using ArcadeMachine.Infraestructure.Persistence;
 using ArcadeMachine.Services;
 using Microsoft.AspNetCore.SignalR;
+using NuGet.Protocol;
 
 namespace ArcadeMachine.Core.Partida.Services;
 
@@ -41,19 +42,32 @@ public class GameHub(
     public async void SincronizarJugada(SyncronizationType type, Guid PartidaId, Guid JugadorId, int query)
     {
         var partida = _partidaService.ObtenerPartida(PartidaId);
+        if (partida is null)
+        {
+            return;
+        }
+
+        if (type == SyncronizationType.Jugada)
+        {
+            Console.WriteLine(partida.ToJson());
+        }
+
         var contrincante = partida.ObtenerContrincante(JugadorId);
 
-        await Clients.User(contrincante).SendAsync("SincronizarJugada", type, query);
+        if (contrincante is not null)
+        {
+            await Clients.User(contrincante).SendAsync("SincronizarJugada", type, query);
+        }
     }
 
     public async Task AbandonarPartida(Guid JugadorId)
     {
         var userName = Context.User?.Identity?.Name;
-        _partidaService.ForzarTerminarPartida(userName);
+        var partida = _partidaService.ForzarTerminarPartida(userName);
 
-        // var contrincante = partida.ObtenerContrincante(JugadorId);
-        // await _partidaRepositorio.CrearPartida(partida);
-        // await Clients.User(contrincante).SendAsync("AbandonarPartida");
+        var contrincante = partida.ObtenerContrincante(JugadorId);
+        await _partidaRepositorio.CrearPartida(partida);
+        await Clients.User(contrincante).SendAsync("AbandonarPartida");
     }
 
 

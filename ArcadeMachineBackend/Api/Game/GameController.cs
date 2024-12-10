@@ -61,12 +61,6 @@ public class GameController : ControllerBase
         {
             var iauser = await _userManager.FindByNameAsync("IA");
             var partidaIa = _partidaService.EmparejarConIa(userId, username, juegoId, Guid.Parse(iauser.Id));
-            // var palabra = await _chatGptService.GetResponseAsync(
-            //     "Obtienen una palabra de entre 5 a 10 letras",
-            //     "eres un jugador de ahorcado profesional, y le daras a tu contrincante la palabra que " +
-            //     "debe adivinar, responderas solo la palabra que elegiste, para que una aplicacion pueda " +
-            //     "validar si el otro jugador la adivina"
-            // );
 
             await _hubContext.Clients.User(partidaIa.userName1)
                 .SendAsync("Match", partidaIa.PartidaId, TipoJugadorEnum.Anfitrion);

@@ -18,4 +18,5 @@ public class MiniJuego
 public class Metadata
 {
     public bool Ia { get; set; }
+    public int WaveColor { get; set; }
 }

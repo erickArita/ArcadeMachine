@@ -101,7 +101,7 @@ public class PartidaTemporal
         }
     }
 
-    public string ObtenerContrincante(Guid jugadorId)
+    public string? ObtenerContrincante(Guid jugadorId)
     {
         if (jugadorId == JugadorId1)
         {

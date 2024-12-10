@@ -19,7 +19,7 @@ export const useWaves = () => {
 };
 
 export const WavesProvider = ({ children }: PropsWithChildren) => {
-  const [wave, setWave] = useState<WaveColorEnum>(WaveColorEnum.BLACK);
+  const [wave, setWave] = useState<WaveColorEnum>(WaveColorEnum.WHITE);
 
   return (
     <WavesContext.Provider

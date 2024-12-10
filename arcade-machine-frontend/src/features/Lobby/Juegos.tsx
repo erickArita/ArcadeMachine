@@ -14,7 +14,7 @@ export const Juegos = () => {
   };
   const { setWaveColor } = useWaves();
   useEffect(() => {
-    setWaveColor(WaveColorEnum.BLACK);
+    setWaveColor(WaveColorEnum.PURPLE);
   }, []);
 
   return (

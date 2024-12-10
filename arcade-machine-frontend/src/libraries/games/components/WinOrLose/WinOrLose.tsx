@@ -13,7 +13,8 @@ export interface WinOrLoseProps {
   oncClick?: () => void;
   isOpen?: boolean;
   win?: boolean;
-  result: ResultadoPartida
+  result: ResultadoPartida,
+  answer?: string;
 }
 
 const resultMessages: Record<ResultadoPartida, string> = {
@@ -35,7 +36,8 @@ const getResults = (result: ResultadoPartida) => {
 export const WinOrLoseOrTie = ({
   oncClick,
   isOpen,
-  result
+  result,
+  answer
 }: WinOrLoseProps) => {
   const { time, start } = useTimer({
     initialTime: 15,
@@ -83,6 +85,12 @@ export const WinOrLoseOrTie = ({
             >
               {time} Volver al lobby
             </Button>
+            <RenderIf condition={lose && !!answer}>
+              <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
+                La palabra correcta era:
+                <h2 className="text-white text-2xl">{answer}</h2>
+              </div>
+            </RenderIf>
             <RenderIf condition={!!win}>
               <Confetti width={550} height={400} />
             </RenderIf>
