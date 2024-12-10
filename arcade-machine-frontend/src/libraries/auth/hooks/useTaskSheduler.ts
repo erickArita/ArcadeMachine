@@ -1,5 +1,5 @@
 import { useCallback, useRef } from "react";
-import { ReturnWorker, createWorker } from "../helpers/createWorker";
+import { type ReturnWorker, createWorker } from "../helpers/createWorker";
 
 interface UseTaskSchedulerProps {
   name: string;
@@ -8,7 +8,7 @@ interface UseTaskSchedulerProps {
 }
 
 export function useTaskScheduler({ name, timeMs }: UseTaskSchedulerProps) {
-  const workerRef = useRef<ReturnWorker>();
+  const workerRef = useRef<ReturnWorker>(undefined);
 
   const launchTask = useCallback(
     (workerFn: () => string, callbackFn: () => void) => {

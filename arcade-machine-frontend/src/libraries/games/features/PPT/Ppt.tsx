@@ -1,10 +1,10 @@
 import { RenderIf } from "../../../../components/RenderIf";
-import { PiedraPapelTijeraEnum } from "../../../../features/api/enums/PiedraPepelTijeraEnum";
+import { PiedraPapelTijera } from "../../../../features/api/enums/PiedraPepelTijeraEnum";
 import { PptEnum } from "../../enums/pptEnum";
 
 interface PptProps {
-  jugada: PiedraPapelTijeraEnum;
-  onJugada?: (jugada: PiedraPapelTijeraEnum) => void;
+  jugada: PiedraPapelTijera;
+  onJugada?: (jugada: PiedraPapelTijera) => void;
   isPlayer1?: boolean;
 }
 
@@ -18,14 +18,14 @@ export const Ppt = ({ jugada, onJugada, isPlayer1 = false }: PptProps) => {
 
   const actionSelected = actionsImgs[jugada];
 
-  const onSelected = (jugada: PiedraPapelTijeraEnum) => {
+  const onSelected = (jugada: PiedraPapelTijera) => {
     onJugada?.(jugada);
   };
 
   return (
     <div className="flex flex-col w-full h-full ">
       <div className="h-2/3 flex justify-center items-center">
-        <RenderIf condition={jugada != PiedraPapelTijeraEnum.Ninguno}>
+        <RenderIf condition={jugada != PiedraPapelTijera.Ninguno}>
           <img width={200} src={actionSelected} alt={actionSelected} />
         </RenderIf>
       </div>
@@ -33,22 +33,22 @@ export const Ppt = ({ jugada, onJugada, isPlayer1 = false }: PptProps) => {
       <div className="flex h-1/3 items-center justify-evenly px-12">
         <RenderIf condition={isPlayer1}>
           <img
-            onClick={() => onSelected(PiedraPapelTijeraEnum.Piedra)}
+            onClick={() => onSelected(PiedraPapelTijera.Piedra)}
             width={150}
-            src={actionsImgs[PiedraPapelTijeraEnum.Piedra]}
+            src={actionsImgs[PiedraPapelTijera.Piedra]}
             className="cursor-pointer"
           />
           <img
             width={150}
-            onClick={() => onSelected(PiedraPapelTijeraEnum.Papel)}
-            src={actionsImgs[PiedraPapelTijeraEnum.Papel]}
+            onClick={() => onSelected(PiedraPapelTijera.Papel)}
+            src={actionsImgs[PiedraPapelTijera.Papel]}
             className="cursor-pointer"
           />
 
           <img
             width={150}
-            onClick={() => onSelected(PiedraPapelTijeraEnum.Tijera)}
-            src={actionsImgs[PiedraPapelTijeraEnum.Tijera]}
+            onClick={() => onSelected(PiedraPapelTijera.Tijera)}
+            src={actionsImgs[PiedraPapelTijera.Tijera]}
             className="cursor-pointer"
           />
         </RenderIf>

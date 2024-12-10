@@ -7,7 +7,7 @@ type TUseInterval = {
 };
 
 export const useInterval = ({ callback, delay = 1000, stop }: TUseInterval) => {
-  const intervalRef = useRef<number>();
+  const intervalRef = useRef<number>(undefined);
   useEffect(() => {
     if (!intervalRef.current && !stop) {
       intervalRef.current = setInterval(callback, delay);

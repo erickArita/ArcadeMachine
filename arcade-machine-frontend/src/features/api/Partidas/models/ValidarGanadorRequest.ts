@@ -1,7 +1,7 @@
-import { ResultadoPartidaEnum } from "../../enums/ResultadoPartidaEunm";
+import { ResultadoPartida } from "../../enums/ResultadoPartidaEunm";
 
 export interface ValidarGanadorRequest {
   partidaId: string;
   jugadorId: string;
-  resultado: ResultadoPartidaEnum;
+  resultado: ResultadoPartida;
 }

@@ -1,5 +1,5 @@
-export enum ResultadoPartidaEnum {
-  Empate, 
-  Victoria ,
-  Derrota ,
+export enum ResultadoPartida {
+  Empate,
+  Victoria,
+  Derrota,
 }

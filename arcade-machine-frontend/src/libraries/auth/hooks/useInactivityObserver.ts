@@ -8,7 +8,7 @@ export const useInactivityObserver = (
   disable = false,
   timeout = TIMEOUT20Mins
 ) => {
-  const timerId = useRef<number>();
+  const timerId = useRef<number>(undefined);
   const [, starTransition] = useTransition();
   const isActivated = useRef(false);
   const initTimer = useCallback(() => {

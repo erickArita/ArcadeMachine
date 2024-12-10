@@ -23,7 +23,7 @@ export const Score = ({ scoreLeft, scoreRight }: ScoreProps) => {
   return (
     <div className="flex   flex-col relative h-[100px]  items-top w-[250px] ">
       <ScoreBase />
-      <div className=" z-50 flex justify-evenly bottom-1 w-full items-center ">
+      <div className=" z-40 flex justify-evenly bottom-1 w-full items-center ">
         <p className="score_value left-5 "> {scoreLeft}</p>
         <div  >
           <img src="/trofeo.svg"   width={60} />

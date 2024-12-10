@@ -1,7 +1,7 @@
-import { PiedraPapelTijeraEnum } from "../../enums/PiedraPepelTijeraEnum";
+import { PiedraPapelTijera } from "../../enums/PiedraPepelTijeraEnum";
 
 export interface SincronizarJugadaRequest {
   PartidaId: string;
   JugadorId: string;
-  Jugada: PiedraPapelTijeraEnum;
+  Jugada: PiedraPapelTijera;
 }

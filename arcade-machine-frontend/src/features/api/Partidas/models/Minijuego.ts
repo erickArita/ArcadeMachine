@@ -4,4 +4,5 @@ export interface Minijuego {
   img: string;
   color: string;
   shadowColor: string;
+  slug:string
 }

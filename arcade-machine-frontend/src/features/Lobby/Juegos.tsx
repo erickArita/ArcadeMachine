@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { CardContainer } from "../libraries/games/components/CardContainer/CardContainer";
-import { WaveColorEnum } from "../libraries/games/enums/waveColor";
-import { useWaves } from "../providers/WavesProvider";
-import { useObtenerJuegosQuery } from "./api/Partidas/partidas";
+import { CardContainer } from "../../libraries/games/components/CardContainer/CardContainer";
+import { WaveColorEnum } from "../../libraries/games/enums/waveColor";
+import { useWaves } from "../../providers/WavesProvider";
+import { useObtenerJuegosQuery } from "../api/Partidas/partidas";
 
 export const Juegos = () => {
   const navigate = useNavigate();

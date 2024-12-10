@@ -3,56 +3,22 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTimer } from "use-timer";
-import { GameLayout } from "../libraries/games/components/GameLayout/GameLayout";
-import { WaveColorEnum } from "../libraries/games/enums/waveColor";
-import { Ppt } from "../libraries/games/features/PPT/Ppt";
-import { invoke, useSignalREffect } from "../providers/SignalProvider";
-import { useUser } from "../libraries/auth/hooks/useUser";
-import { useWaves } from "../providers/WavesProvider";
+import { GameLayout } from "../../libraries/games/components/GameLayout/GameLayout";
+import { WaveColorEnum } from "../../libraries/games/enums/waveColor";
+import { Ppt } from "../../libraries/games/features/PPT/Ppt";
+import { invoke, useSignalREffect } from "../../providers/SignalProvider";
+import { useUser } from "../../libraries/auth/hooks/useUser";
+import { useWaves } from "../../providers/WavesProvider";
 import {
   useTerminarPartidaMutation,
   useValidarGanadorMutation,
-} from "./api/Partidas/partidas";
-import { PiedraPapelTijeraEnum } from "./api/enums/PiedraPepelTijeraEnum";
-import { ResultadoPartidaEnum } from "./api/enums/ResultadoPartidaEunm";
-import { SyncronizationEnum } from "./api/enums/SyncronizationEnum";
-import { TipoJugadorEnum } from "./api/enums/TipoUsuarioEnum";
-import { WinOrLoseOrTie } from "../libraries/games/components/WinOrLose/WinOrLose";
-
-const validarGanador = (
-  jugada1: PiedraPapelTijeraEnum,
-  jugada2: PiedraPapelTijeraEnum
-): ResultadoPartidaEnum => {
-  const jugadas = [
-    [
-      ResultadoPartidaEnum.Empate,
-      ResultadoPartidaEnum.Derrota,
-      ResultadoPartidaEnum.Victoria,
-      ResultadoPartidaEnum.Derrota,
-    ],
-    [
-      ResultadoPartidaEnum.Victoria,
-      ResultadoPartidaEnum.Empate,
-      ResultadoPartidaEnum.Derrota,
-      ResultadoPartidaEnum.Derrota,
-    ],
-    [
-      ResultadoPartidaEnum.Derrota,
-      ResultadoPartidaEnum.Victoria,
-      ResultadoPartidaEnum.Empate,
-      ResultadoPartidaEnum.Derrota,
-    ],
-    [
-      ResultadoPartidaEnum.Derrota,
-      ResultadoPartidaEnum.Derrota,
-      ResultadoPartidaEnum.Derrota,
-      ResultadoPartidaEnum.Derrota,
-    ],
-  ];
-  const res = jugadas[ jugada1 - 1 ][ jugada2 - 1 ];
-
-  return res;
-};
+} from "../api/Partidas/partidas";
+import { PiedraPapelTijera } from "../api/enums/PiedraPepelTijeraEnum";
+import { ResultadoPartida } from "../api/enums/ResultadoPartidaEunm";
+import { SyncronizationEnum } from "../api/enums/SyncronizationEnum";
+import { TipoJugadorEnum } from "../api/enums/TipoUsuarioEnum";
+import { WinOrLoseOrTie } from "../../libraries/games/components/WinOrLose/WinOrLose";
+import { inferirResultado } from "./sistemaExperto";
 
 interface Score {
   [ key: string ]: {
@@ -74,15 +40,14 @@ export const PiedraPepelpTijera = () => {
 
   const { user } = useUser();
 
-  const [ jugada, setJugada ] = useState<PiedraPapelTijeraEnum>(
-    PiedraPapelTijeraEnum.Papel
+  const [ jugada, setJugada ] = useState<PiedraPapelTijera>(
+    PiedraPapelTijera.Papel
   );
-  const [ jugadaOponente, setJugadaOponente ] = useState<PiedraPapelTijeraEnum>(
-    PiedraPapelTijeraEnum.Papel
+  const [ jugadaOponente, setJugadaOponente ] = useState<PiedraPapelTijera>(
+    PiedraPapelTijera.Papel
   );
 
   const ref = useRef(1);
-
   const [ timer, setTimer ] = useState(10);
 
   const [ score, setsCore ] = useState<Score>({});
@@ -111,7 +76,7 @@ export const PiedraPepelpTijera = () => {
       }
     },
     onTimeUpdate(time) {
-      if(tipoJugadorParced == TipoJugadorEnum.Anfitrion) {
+      if(tipoJugadorParced === TipoJugadorEnum.Anfitrion) {
         invoke(
           "SincronizarJugada",
           SyncronizationEnum.Timer,
@@ -131,13 +96,13 @@ export const PiedraPepelpTijera = () => {
   );
 
   const handleValidarGanador = useCallback(
-    async (jugadaOponente: PiedraPapelTijeraEnum) => {
+    async (jugadaOponente: PiedraPapelTijera) => {
       await validarResultados({
         jugadorId: user?.userId as string,
         partidaId: partidaId as string,
-        resultado: validarGanador(jugada, jugadaOponente),
+        resultado: inferirResultado(jugada, jugadaOponente),
       }).unwrap();
-      if(ref.current == 3) {
+      if(ref.current === 3) {
         console.log(user?.userId);
 
         await terminarPartida({
@@ -152,15 +117,15 @@ export const PiedraPepelpTijera = () => {
   useSignalREffect(
     "SincronizarJugada",
     (type: SyncronizationEnum, message: number) => {
-      if(type == SyncronizationEnum.Jugada) {
+      if(type === SyncronizationEnum.Jugada) {
         setJugadaOponente(message);
-        if(tipoJugadorParced == TipoJugadorEnum.Anfitrion) {
+        if(tipoJugadorParced === TipoJugadorEnum.Anfitrion) {
           handleValidarGanador(message);
         }
       }
 
-      if(type == SyncronizationEnum.Timer) {
-        if(tipoJugadorParced == TipoJugadorEnum.Invitado) {
+      if(type === SyncronizationEnum.Timer) {
+        if(tipoJugadorParced === TipoJugadorEnum.Invitado) {
           setTimer(message);
         }
       }
@@ -204,14 +169,14 @@ export const PiedraPepelpTijera = () => {
     },
     [ handleValidarGanador ]
   );
-  const validarSiganoPerdioEmpato = (anfitrioScore: number, invitadoScore: number): ResultadoPartidaEnum => {
+  const validarSiganoPerdioEmpato = (anfitrioScore: number, invitadoScore: number): ResultadoPartida => {
     if(anfitrioScore > invitadoScore) {
-      return ResultadoPartidaEnum.Victoria;
+      return ResultadoPartida.Victoria;
     }
     if(anfitrioScore < invitadoScore) {
-      return ResultadoPartidaEnum.Derrota;
+      return ResultadoPartida.Derrota;
     }
-    return ResultadoPartidaEnum.Empate;
+    return ResultadoPartida.Empate;
   }
 
   return (
@@ -232,7 +197,7 @@ export const PiedraPepelpTijera = () => {
         numeroPArtida={numJudadas}
       />
       <WinOrLoseOrTie
-        isOpen={true}
+        isOpen={openResults}
         oncClick={onFinalizar}
         result={validarSiganoPerdioEmpato(anfitrionScore, invitadoScore?.[ 1 ].score || 0)}
       />

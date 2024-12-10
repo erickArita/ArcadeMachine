@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { GameLobby } from "../libraries/games/components/GameLobby/GameLobby";
-import { WaveColorEnum } from "../libraries/games/enums/waveColor";
-import { invoke, useSignalREffect } from "../providers/SignalProvider";
-import { useUser } from "../libraries/auth/hooks/useUser";
-import { useWaves } from "../providers/WavesProvider";
+import { GameLobby } from "../../libraries/games/components/GameLobby/GameLobby";
+import { WaveColorEnum } from "../../libraries/games/enums/waveColor";
+import { invoke, useSignalREffect } from "../../providers/SignalProvider";
+import { useUser } from "../../libraries/auth/hooks/useUser";
+import { useWaves } from "../../providers/WavesProvider";
 import {
   useLazyEmparejarQuery,
   useObtenerJuegoPorIdQuery,
-} from "./api/Partidas/partidas";
+} from "../api/Partidas/partidas";
 import {
   useRankingPorJuegoQuery,
   useWankingPorUsuarioQuery,
-} from "./api/rankings/rankings";
-import { speak } from "../utils/speechUtil";
+} from "../api/rankings/rankings";
+import { speak } from "../../utils/speechUtil";
 
 export const GameLobbyFeature = () => {
   const { tipoJuego } = useParams<{ tipoJuego: string }>();
@@ -43,7 +43,7 @@ export const GameLobbyFeature = () => {
       speak("¡Partida encontrada!");
 
       setTimeout(() => {
-        navigate(`partida/${partidaId}/${tipoJugador}`);
+        navigate(`partida/${partidaId}/${tipoJugador}/${juego?.slug}`);
       }, 1000);
     },
     []

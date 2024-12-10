@@ -7,28 +7,28 @@ import { CustomModal } from "../../../../components/CustomModal.tsx";
 import { useTimer } from "use-timer";
 import { RenderIf } from "../../../../components/RenderIf.tsx";
 import { useEffect } from "react";
-import { ResultadoPartidaEnum } from "../../../../features/api/enums/ResultadoPartidaEunm.ts";
+import { ResultadoPartida } from "../../../../features/api/enums/ResultadoPartidaEunm.ts";
 
 export interface WinOrLoseProps {
   oncClick?: () => void;
   isOpen?: boolean;
   win?: boolean;
-  result: ResultadoPartidaEnum
+  result: ResultadoPartida
 }
 
-const resultMessages: Record<ResultadoPartidaEnum, string> = {
-  [ ResultadoPartidaEnum.Derrota ]: "Fuiste humillado",
-  [ ResultadoPartidaEnum.Empate ]: "Empate",
-  [ ResultadoPartidaEnum.Victoria ]: "Ganaste Felicidades"
+const resultMessages: Record<ResultadoPartida, string> = {
+  [ ResultadoPartida.Derrota ]: "Fuiste humillado",
+  [ ResultadoPartida.Empate ]: "Empate",
+  [ ResultadoPartida.Victoria ]: "Ganaste Felicidades"
 }
 
 
-const getResults = (result: ResultadoPartidaEnum) => {
+const getResults = (result: ResultadoPartida) => {
   return {
     message: resultMessages[ result ],
-    win: result === ResultadoPartidaEnum.Victoria,
-    tie: result === ResultadoPartidaEnum.Empate,
-    lose: result === ResultadoPartidaEnum.Derrota
+    win: result === ResultadoPartida.Victoria,
+    tie: result === ResultadoPartida.Empate,
+    lose: result === ResultadoPartida.Derrota
   }
 }
 
