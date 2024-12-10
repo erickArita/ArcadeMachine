@@ -30,7 +30,7 @@ export function Ahorcado() {
   const [ gameState, setGameState ] = useState<'input' | 'playing' | 'won' | 'lost'>('playing')
   const [ currentGuess, setCurrentGuess ] = useState('')
 
-  const { partidaId, tipoJugador } = useParams<{
+  const { partidaId } = useParams<{
     partidaId: string;
     tipoJugador: string;
   }>();
