@@ -22,7 +22,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           customLoginFn={login}
           customRegisterFn={register}
         >
-          <main className="dark  text-foreground bg-background  min-h-full ">
+          <main className="light  text-foreground bg-background  min-h-full ">
             <div className="w-full h-full">
               <RouterProvider router={Router} />
             </div>

@@ -120,7 +120,7 @@ public class GameController : ControllerBase
     [HttpPost]
     public async Task<OkResult> TerminarPartida([FromBody] TerminarPartidaRequest request)
     {
-        var partida = _partidaService.TerminarPartida(request.PartidaId, request.JugadorId);
+        var partida = _partidaService.TerminarPartida(request.PartidaId);
 
 
         if (partida is not null)

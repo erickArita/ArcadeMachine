@@ -46,21 +46,24 @@ public class PartidasService : IPartidaService
         return partida;
     }
 
-    public PartidaTemporal? TerminarPartida(Guid partidaId, Guid usuarioId)
+    public PartidaTemporal? TerminarPartida(Guid partidaId)
     {
-        var partida = Partidas.First(p => p.PartidaId == partidaId);
+        var partida = Partidas.FirstOrDefault(p => p.PartidaId == partidaId);
+
+        if (partida == null)
+        {
+            return null;
+        }
 
         if (!partida.Terminada)
         {
             partida.Terminada = true;
-        }
-        else
-        {
             Partidas.Remove(partida);
             return partida;
         }
 
-        return null;
+        Partidas.Remove(partida);
+        return partida;
     }
 
     public (PartidaTemporal, string?) SumarGanador(
@@ -108,7 +111,7 @@ public class PartidasService : IPartidaService
 
     public PartidaTemporal ObtenerPartida(Guid partidaId)
     {
-        return Partidas.First(p => p.PartidaId == partidaId);
+        return Partidas.FirstOrDefault(p => p.PartidaId == partidaId);
     }
 
     private PartidaTemporal? UsuarioEnPartida(string userName)

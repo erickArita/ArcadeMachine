@@ -9,7 +9,7 @@ public interface IPartidaService
     PartidaTemporal Emparejar(Guid jugadorId, string username, Guid juegoId);
     PartidaTemporal EmparejarConIa(Guid jugadorId, string username, Guid juegoId,Guid ia);
 
-    PartidaTemporal? TerminarPartida(Guid partidaId, Guid usuarioId);
+    PartidaTemporal? TerminarPartida(Guid partidaId);
 
     (PartidaTemporal, string) SumarGanador(
         Guid partidaId,

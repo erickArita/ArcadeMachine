@@ -10,7 +10,8 @@ namespace ArcadeMachine.Core.Partida.Services;
 public class GameHub(
     IPartidaService _partidaService,
     IPartidaRepositorio _partidaRepositorio,
-    IChatGptService _chatGptService
+    IChatGptService _chatGptService,
+    IHubContext<GameHub> _hubContext
 ) : Hub
 {
     public override async Task OnConnectedAsync()
@@ -32,7 +33,7 @@ public class GameHub(
                 "debe adivinar, responderas solo la palabra que elegiste, para que una aplicacion pueda " +
                 "validar si el otro jugador la adivina"
             );
-            await Clients.User(humanPlayer).SendAsync("SyncGame", palabra);
+            await _hubContext.Clients.User(humanPlayer).SendAsync("SyncGame", evento, palabra);
         }
     }
 
@@ -47,15 +48,11 @@ public class GameHub(
     public async Task AbandonarPartida(Guid JugadorId)
     {
         var userName = Context.User?.Identity?.Name;
-        var partida = _partidaService.ForzarTerminarPartida(userName);
-        if (partida is null)
-        {
-            return;
-        }
+        _partidaService.ForzarTerminarPartida(userName);
 
-        var contrincante = partida.ObtenerContrincante(JugadorId);
-        await _partidaRepositorio.CrearPartida(partida);
-        await Clients.User(contrincante).SendAsync("AbandonarPartida");
+        // var contrincante = partida.ObtenerContrincante(JugadorId);
+        // await _partidaRepositorio.CrearPartida(partida);
+        // await Clients.User(contrincante).SendAsync("AbandonarPartida");
     }
 
 

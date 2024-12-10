@@ -41,7 +41,7 @@ public class PartidasRepositorio : IPartidaRepositorio
         var jugadasConResultado = await _appContext.Partidas
             .Include(p => p.usuario1)
             .Include(p => p.usuario2)
-            .Where(p => p.usuario1Id == jugadorId || p.usuario2Id == jugadorId)
+            .Where(p => p.usuario1Id == jugadorId || p.usuario2Id == jugadorId && p.juegoId == juegoId) 
             .OrderByDescending(p => p.fechaPartida)
             .Take(10)
             .Select(p => new UserHistory(

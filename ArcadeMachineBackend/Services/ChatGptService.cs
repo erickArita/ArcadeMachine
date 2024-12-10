@@ -5,7 +5,7 @@ namespace ArcadeMachine.Services;
 
 public interface IChatGptService
 {
-    Task<string> GetResponseAsync(string prompt, string? prePrompt = null);
+    Task<ChatMessageContentPart?> GetResponseAsync(string prompt, string? prePrompt = null);
 }
 
 public class ChatGptService : IChatGptService
@@ -18,7 +18,7 @@ public class ChatGptService : IChatGptService
         _api = client;
     }
 
-    public async Task<string> GetResponseAsync(string prompt, string? prePrompt = null)
+    public async Task<ChatMessageContentPart?> GetResponseAsync(string prompt, string? prePrompt = null)
 
     {
         var message = new List<ChatMessage>()
@@ -35,7 +35,8 @@ public class ChatGptService : IChatGptService
             PresencePenalty = 0,
         });
 
-        return completion.Content.ToJson();
+        var response = completion.Content[0];
+
+        return response;
     }
- 
 }

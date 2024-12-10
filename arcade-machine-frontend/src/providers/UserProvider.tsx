@@ -21,13 +21,13 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
   });
 
   return (
-    <UserContext.Provider
+    <UserContext
       value={{
         user: data,
         isLoading: isFetching,
       }}
     >
       <Loader isLoading={isLoading}>{children}</Loader>
-    </UserContext.Provider>
+    </UserContext>
   );
 };
