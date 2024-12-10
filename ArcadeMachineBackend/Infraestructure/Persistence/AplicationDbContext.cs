@@ -1,4 +1,5 @@
-﻿using ArcadeMachine.Domain.Entities;
+﻿using System.Text.Json.Serialization;
+using ArcadeMachine.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,6 +27,9 @@ public class AplicationDbContext : IdentityDbContext
             .WithMany()
             .HasForeignKey(p => p.usuario2Id)
             .OnDelete(DeleteBehavior.NoAction);
+
+        /* Owned Type Configurations */
+        modelBuilder.Entity<MiniJuego>().OwnsOne(e => e.Metadata, a => { a.ToJson(); });
     }
 
     public DbSet<Partida> Partidas { get; set; }

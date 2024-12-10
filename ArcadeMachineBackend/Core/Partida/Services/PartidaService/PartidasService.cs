@@ -1,6 +1,5 @@
 ﻿using ArcadeMachine.Core.Partida.Enums;
 using ArcadeMachine.Core.Partida.Models;
-using ArcadeMachine.Core.Partida.Services.PartidaService.Modelos;
 
 namespace ArcadeMachine.Core.Partida.Services.PartidaService;
 
@@ -23,6 +22,14 @@ public class PartidasService : IPartidaService
             return partida;
         }
     }
+
+    public PartidaTemporal EmparejarConIa(Guid jugadorId, string username, Guid juegoId, Guid ia)
+    {
+        var partida = CrearPartida(jugadorId, username, juegoId);
+        partida.AgregarJugador(ia, "IA", TipoJugadorEnum.Invitado);
+        return partida;
+    }
+
 
     private (PartidaTemporal?, bool) HayPartidasDisponibles(Guid juegoId)
     {

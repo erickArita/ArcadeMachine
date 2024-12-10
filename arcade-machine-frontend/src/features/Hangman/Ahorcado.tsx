@@ -8,7 +8,7 @@ export function Ahorcado() {
   const [ word, setWord ] = useState('')
   const [ guessedLetters, setGuessedLetters ] = useState<Set<string>>(new Set())
   const [ errors, setErrors ] = useState(0)
-  const [ gameState, setGameState ] = useState<'input' | 'playing' | 'won' | 'lost'>('input')
+  const [ gameState, setGameState ] = useState<'input' | 'playing' | 'won' | 'lost'>('playing')
   const [ currentGuess, setCurrentGuess ] = useState('')
 
   const maxErrors = 10

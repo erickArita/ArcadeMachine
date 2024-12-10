@@ -10,5 +10,5 @@ public interface IPartidaRepositorio
     Task<List<UserHistory>> ObtenerUltimasPartidas(Guid juegoId, string jugadorId);
     Task<List<MundialTop>> ObtenerMejoresJugadoresPorJuego(Guid juegoId);
     Task<List<MiniJuego>> ObtenerMiniJuegos();
-    Task<MiniJuego> ObtenerMiniJuego(Guid juegoId);
+    Task<MiniJuego> ObtenerMiniJuego(string juegoId);
 }

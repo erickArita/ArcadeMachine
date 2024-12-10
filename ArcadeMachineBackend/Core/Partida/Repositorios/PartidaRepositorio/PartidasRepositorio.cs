@@ -26,7 +26,7 @@ public class PartidasRepositorio : IPartidaRepositorio
             usuario2Id = partidaTemporal.JugadorId2.ToString(),
             puntajeUsuario1 = partidaTemporal.ResultadoJugador1,
             puntajeUsuario2 = partidaTemporal.ResultadoJugador2,
-            fechaPartida = DateTime.Now
+            fechaPartida = new DateTime()
         };
         await _appContext.Partidas.AddAsync(partida);
         await _appContext.SaveChangesAsync();
@@ -104,9 +104,9 @@ public class PartidasRepositorio : IPartidaRepositorio
         return minijuegos;
     }
 
-    public async Task<MiniJuego> ObtenerMiniJuego(Guid minijuegoId)
+    public async Task<MiniJuego> ObtenerMiniJuego(string minijuegoId)
     {
-        var minijuego = await _appContext.Minijuegos.FirstOrDefaultAsync(m => m.Id == minijuegoId) ??
+        var minijuego = await _appContext.Minijuegos.FirstOrDefaultAsync(m => m.Slug == minijuegoId) ??
                         throw new Exception("No se encontro el minijuego");
         return minijuego;
     }

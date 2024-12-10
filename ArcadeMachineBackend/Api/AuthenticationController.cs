@@ -132,4 +132,39 @@ public class AuthenticationController : ControllerBase
             throw new Exception("Error al obtener la información del usuario");
         }
     }
+    
+    //create a ia user 
+    [Authorize]
+    [HttpPost]
+    [Route("CreateIAUser")]
+    public async Task<IActionResult> CreateIAUser()
+    {
+        var createIAUser = new 
+        {
+            Username = "IA",
+            Password = "7M^^95Th"
+        };
+        
+        var existUserName = await _userManager.FindByNameAsync(createIAUser.Username);
+        if (existUserName != null)
+        {
+            return AplicationResponses.Error("El nombre de usuario ya existe");
+        }
+
+        var user = new IdentityUser
+        {
+            UserName = createIAUser.Username,
+            Email = createIAUser.Username + "@ia.com"
+        };
+
+        var result = await _userManager.CreateAsync(user, createIAUser.Password);
+
+        if (!result.Succeeded)
+        {
+            return AplicationResponses.Error("Error al crear el usuario", result.Errors);
+        }
+
+        return AplicationResponses.Success();
+    }
+    
 }

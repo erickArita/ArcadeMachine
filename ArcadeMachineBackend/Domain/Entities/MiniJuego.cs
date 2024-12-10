@@ -12,4 +12,10 @@ public class MiniJuego
     [Required] public string Color { get; set; }
     [Required] public string ShadowColor { get; set; }
     [Required] public string Slug { get; set; }
+    public Metadata Metadata { get; set; } = new();
+}
+
+public class Metadata
+{
+    public bool Ia { get; set; }
 }

@@ -7,6 +7,8 @@ namespace ArcadeMachine.Core.Partida.Services.PartidaService;
 public interface IPartidaService
 {
     PartidaTemporal Emparejar(Guid jugadorId, string username, Guid juegoId);
+    PartidaTemporal EmparejarConIa(Guid jugadorId, string username, Guid juegoId,Guid ia);
+
     PartidaTemporal? TerminarPartida(Guid partidaId, Guid usuarioId);
 
     (PartidaTemporal, string) SumarGanador(

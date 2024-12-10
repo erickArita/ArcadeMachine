@@ -8,6 +8,7 @@ using ArcadeMachine.Core.Partida.Services.PartidaService;
 using ArcadeMachine.Core.Partida.Services.PartidaService.Modelos;
 using ArcadeMachine.Domain.Entities;
 using ArcadeMachine.Infraestructure.Persistence;
+using ArcadeMachine.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
@@ -25,22 +26,30 @@ public class GameController : ControllerBase
     private readonly IPartidaRepositorio _partidaRepositorio;
     private readonly IHubContext<GameHub> _hubContext;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly IChatGptService _chatGptService;
 
     public GameController(IPartidaService partidaService, IPartidaRepositorio partidaRepositorio,
         IHubContext<GameHub> hubContext,
         UserManager<IdentityUser> userManager,
-        AplicationDbContext context
+        AplicationDbContext context,
+        IChatGptService chatGptService
     )
     {
         _partidaService = partidaService;
         _partidaRepositorio = partidaRepositorio;
         _hubContext = hubContext;
         _userManager = userManager;
+        _chatGptService = chatGptService;
     }
 
 
     [HttpGet]
-    public async Task<OkResult> Emparejar([FromQuery] Guid userId, [FromQuery] Guid juegoId)
+    public async Task<OkResult> Emparejar(
+        [FromQuery] Guid userId,
+        [FromQuery] Guid juegoId,
+        [FromQuery] bool? useIA,
+        CancellationToken cancellationToken = default
+    )
     {
         var username = User.Identity.Name;
         if (username is null)
@@ -48,7 +57,25 @@ public class GameController : ControllerBase
             throw new Exception("No se pudo obtener el usuario");
         }
 
+        if (useIA.HasValue && useIA.Value)
+        {
+            var iauser = await _userManager.FindByNameAsync("IA");
+            var partidaIa = _partidaService.EmparejarConIa(userId, username, juegoId, Guid.Parse(iauser.Id));
+            // var palabra = await _chatGptService.GetResponseAsync(
+            //     "Obtienen una palabra de entre 5 a 10 letras",
+            //     "eres un jugador de ahorcado profesional, y le daras a tu contrincante la palabra que " +
+            //     "debe adivinar, responderas solo la palabra que elegiste, para que una aplicacion pueda " +
+            //     "validar si el otro jugador la adivina"
+            // );
+
+            await _hubContext.Clients.User(partidaIa.userName1)
+                .SendAsync("Match", partidaIa.PartidaId, TipoJugadorEnum.Anfitrion);
+
+            return Ok();
+        }
+
         var partida = _partidaService.Emparejar(userId, username, juegoId);
+
         if (partida.Emparejada())
         {
             var user1 = partida.userName1;
@@ -120,7 +147,7 @@ public class GameController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<MiniJuego> ObtenerMiniJuego([FromQuery] Guid juegoId)
+    public async Task<MiniJuego> ObtenerMiniJuego([FromQuery] string juegoId)
     {
         var miniJuego = await _partidaRepositorio.ObtenerMiniJuego(juegoId);
         return miniJuego;

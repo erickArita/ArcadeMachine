@@ -1,5 +1,6 @@
 ﻿using ArcadeMachine.Domain.Entities;
 using ArcadeMachine.Infraestructure.Persistence;
+using Microsoft.AspNetCore.Identity;
 
 namespace ArcadeMachine.Infraestructure.Seeds;
 
@@ -38,6 +39,10 @@ public static class MiniJuegoSeeder
                     Color = "#ffb900",
                     ShadowColor = "#ffe49e",
                     Slug = "ahorcado",
+                    Metadata = new Metadata
+                    {
+                        Ia = true
+                    }
                 },
                 new()
                 {
@@ -47,7 +52,7 @@ public static class MiniJuegoSeeder
                     Nombre = "XO",
                     Color = "#dd2bbc",
                     ShadowColor = "#fba4ea",
-                    Slug = "xo",
+                    Slug = "xo"
                 }
             };
             dbContext.Minijuegos.AddRange(miniJuego);

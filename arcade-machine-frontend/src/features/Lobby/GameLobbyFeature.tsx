@@ -22,7 +22,7 @@ export const GameLobbyFeature = () => {
 
   const { data: juego, isLoading } = useObtenerJuegoPorIdQuery(
     {
-      juegoId: tipoJuego,
+      slug: tipoJuego,
     },
     {
       skip: !tipoJuego,
@@ -42,8 +42,9 @@ export const GameLobbyFeature = () => {
       setBuscandoPartida(false);
       speak("¡Partida encontrada!");
 
+
       setTimeout(() => {
-        navigate(`partida/${partidaId}/${tipoJugador}/${juego?.slug}`);
+        navigate(`partida/${partidaId}/${tipoJugador}`);
       }, 1000);
     },
     []
@@ -51,7 +52,8 @@ export const GameLobbyFeature = () => {
 
   const onEmparejar = () => {
     if(!user || !tipoJuego) return;
-    emparejarQuery({ userId: user.userId, juegoId: tipoJuego });
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
+    emparejarQuery({ userId: user.userId, juegoId: juego?.id!, ia: juego?.metadata.ia });
     setBuscandoPartida(true);
   };
 
@@ -62,17 +64,19 @@ export const GameLobbyFeature = () => {
 
   const { data: RankingPorJuego, isLoading: isLoadingRankingPorJuego } =
     useRankingPorJuegoQuery(
-      { juegoId: tipoJuego },
+      { juegoId: juego?.id },
       {
-        skip: !tipoJuego,
+        skip: !juego?.id,
+        refetchOnMountOrArgChange: true,
       }
     );
 
   const { data: WankingPorUsuario, isLoading: isLoadingWankingPorUsuario } =
     useWankingPorUsuarioQuery(
-      { juegoId: tipoJuego, jugadorId: user?.userId },
+      { juegoId: juego?.id, jugadorId: user?.userId },
       {
-        skip: !user?.userId || !tipoJuego,
+        skip: !user?.userId || !juego?.id,
+        refetchOnMountOrArgChange: true,
       }
     );
 

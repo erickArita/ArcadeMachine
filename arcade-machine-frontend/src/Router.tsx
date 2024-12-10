@@ -52,7 +52,7 @@ export const Router = createBrowserRouter([
         ],
       },
       {
-        path: "partida/:partidaId/:tipoJugador/piedra-papel-tijeras",
+        path: "piedra-papel-tijeras/partida/:partidaId/:tipoJugador",
         element: (
           <Layout renderNavbar={false}>
             <PiedraPepelpTijera />
@@ -60,21 +60,13 @@ export const Router = createBrowserRouter([
         ),
       },
       {
-        path: "partida/:partidaId/:tipoJugador/ahorcado",
+        path: "ahorcado/partida/:partidaId/:tipoJugador",
         element: (
           <Layout renderNavbar={false}>
             <Ahorcado />
           </Layout>
         ),
-      },
-      {
-        path: "/ahorcado",
-        element: (
-          <Layout renderNavbar={false}>
-            <Ahorcado />
-          </Layout>
-        ),
-      },
+      }
     ],
   },
 ]);

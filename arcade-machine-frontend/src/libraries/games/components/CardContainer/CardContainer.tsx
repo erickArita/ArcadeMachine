@@ -31,7 +31,7 @@ export const CardContainer = ({
                 img={minijuego.img}
                 shadowColor={minijuego.shadowColor}
                 title={minijuego.nombre}
-                oncClick={() => onSelectJuego?.(minijuego.id)}
+                oncClick={() => onSelectJuego?.(minijuego.slug)}
               />
             </div>
           ))}

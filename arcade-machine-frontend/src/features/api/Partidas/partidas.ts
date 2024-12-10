@@ -18,10 +18,11 @@ const gamesApi = gamesApiWithTags.injectEndpoints({
       {
         userId: string;
         juegoId: string;
+        ia?:boolean
       }
     >({
-      query: ({ userId, juegoId }) => ({
-        url: `api/game/emparejar?userId=${userId}&juegoId=${juegoId}`,
+      query: ({ userId, juegoId ,ia}) => ({
+        url: `api/game/emparejar?userId=${userId}&juegoId=${juegoId}&useIA=${ia}`,
       }),
     }),
     sincronizarJugada: builder.query<void, SincronizarJugadaRequest>({
@@ -54,9 +55,9 @@ const gamesApi = gamesApiWithTags.injectEndpoints({
         url: `${controllerName}/ObtenerMiniJuegos`,
       }),
     }),
-    obtenerJuegoPorId: builder.query<Minijuego, { juegoId?: string }>({
-      query: ({ juegoId }) => ({
-        url: `${controllerName}/ObtenerMiniJuego?juegoId=${juegoId}`,
+    obtenerJuegoPorId: builder.query<Minijuego, { slug?: string }>({
+      query: ({ slug }) => ({
+        url: `${controllerName}/ObtenerMiniJuego?juegoId=${slug}`,
       }),
     }),
     obtenerPartidas: builder.query<Partida, { partidaId: string }>({

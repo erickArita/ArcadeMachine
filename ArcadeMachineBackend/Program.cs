@@ -6,6 +6,7 @@ using ArcadeMachine.Core.Partida.Services;
 using ArcadeMachine.Core.Partida.Services.PartidaService;
 using ArcadeMachine.Infraestructure.Persistence;
 using ArcadeMachine.Infraestructure.Seeds;
+using ArcadeMachine.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
@@ -50,6 +51,13 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(opt => opt.SignIn.Requi
     .AddErrorDescriber<ErrorMessages>()
     .AddEntityFrameworkStores<AplicationDbContext>()
     .AddDefaultTokenProviders();
+
+var apiKey = builder.Configuration["OpenAI:ApiKey"];
+if (apiKey == null)
+{
+    throw new Exception("OpenAI:ApiKey is not set");
+}
+builder.Services.AddSingleton<IChatGptService>(new ChatGptService(apiKey!));
 
 builder.Services.AddAuthentication(options =>
 {
