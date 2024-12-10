@@ -29,7 +29,8 @@ public class GameHub(
         {
             var palabra = await _chatGptService.GetResponseAsync(
                 "Obtienen una palabra de entre 5 a 10 letras",
-                "eres un jugador de ahorcado profesional, y le daras a tu contrincante la palabra que " +
+                "eres un jugador de ahorcado profesional,de vez en cuando sube o baja la dificultad de esas palabras y" +
+                " le daras a tu contrincante la palabra que " +
                 "debe adivinar, responderas solo la palabra que elegiste, para que una aplicacion pueda " +
                 "validar si el otro jugador la adivina"
             );

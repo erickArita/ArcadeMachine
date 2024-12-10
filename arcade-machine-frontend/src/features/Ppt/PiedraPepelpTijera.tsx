@@ -19,6 +19,7 @@ import { SyncronizationEnum } from "../api/enums/SyncronizationEnum";
 import { TipoJugadorEnum } from "../api/enums/TipoUsuarioEnum";
 import { WinOrLoseOrTie } from "../../libraries/games/components/WinOrLose/WinOrLose";
 import { inferirResultado } from "./sistemaExperto";
+import { speak } from "../../utils/speechUtil";
 
 interface Score {
   [ key: string ]: {
@@ -155,6 +156,9 @@ export const PiedraPepelpTijera = () => {
     "TerminarPartida",
     () => {
       setopenResults(true);
+      const res = validarSiganoPerdioEmpato(anfitrionScore, invitadoScore?.[ 1 ].score || 0)
+      speak(res === ResultadoPartida.Victoria ? 'Felicidades Ganaste' : 'Fuiste humillado')
+
     },
     []
   );

@@ -10,6 +10,7 @@ import { WinOrLoseOrTie } from '../../libraries/games/components/WinOrLose/WinOr
 import { invoke, useSignalREffect } from '../../providers/SignalProvider'
 import { useTerminarPartidaMutation, useValidarGanadorMutation } from '../api/Partidas/partidas'
 import { ResultadoPartida } from '../api/enums/ResultadoPartidaEunm'
+import { speak } from '../../utils/speechUtil'
 
 
 const useAhorcadoTimer = (initialTime: number) => {
@@ -123,6 +124,7 @@ export function Ahorcado() {
 
   const handleValidarGanador = useCallback(
     async (resultado: ResultadoPartida) => {
+      speak(resultado === ResultadoPartida.Victoria ? 'Felicidades Ganaste' : 'Fuiste humillado por la IA')
       await validarResultados({
         jugadorId: user?.userId as string,
         partidaId: partidaId as string,
